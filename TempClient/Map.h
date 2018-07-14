@@ -142,7 +142,7 @@ private:
 			}
 		}
 		map.close();
-		delete cmap;
+		delete[] cmap;
 		loadTilesPlace();
 	}
 	void loadTilesPlace()

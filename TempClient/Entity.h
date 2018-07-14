@@ -43,15 +43,15 @@ public:
 		float tmpY = (rySpeed + ySpeed) / fps;
 		rySpeed = std::modf(tmpY, &tmpY);
 
-		box.x += tmpX;
+		box.x += static_cast<int>(tmpX);
 
 		if ((box.x < 0) || (box.x + box.w > map.width) || map.collides(box))
-			box.x -= tmpX;
+			box.x -= static_cast<int>(tmpX);
 
-		box.y += tmpY;
+		box.y += static_cast<int>(tmpY);
 
 		if ((box.y < 0) || (box.y + box.w > map.height) || map.collides(box))
-			box.y -= tmpY;
+			box.y -= static_cast<int>(tmpY);
 	}
 public:
 	SDL_Rect box;
