@@ -5,15 +5,7 @@
 class Event
 {
 public:
-	Event()
-	{
-
-	}
-	~Event()
-	{
-
-	}
-	void checkEvents(bool & quit, bool & moving)
+	void checkEvents(bool& quit, bool& moving)
 	{
 		while (SDL_PollEvent(&e) != 0)
 		{
@@ -56,6 +48,7 @@ public:
 					}
 				}
 			}
+
 			//If a key was released
 			else if (e.type == SDL_KEYUP)
 			{
@@ -90,8 +83,9 @@ public:
 			}
 		}
 	}
+
 private:
 	SDL_Event e;
 };
 
-Event * evptr;
+Event* evptr;

@@ -15,33 +15,29 @@ struct TileInfo
 class Tile
 {
 public:
-	Tile()
-	{
-	}
-	~Tile()
-	{
-
-	}
-	void setTile(int x, int y, int type, TileInfo info)
+	void setTile(const int x, const int y, const int _type, TileInfo& info)
 	{
 		box.x = x;
 		box.y = y;
 		box.w = TILE_WIDTH;
 		box.h = TILE_HEIGHT;
-		this->type = type;
+		type = _type;
 		tileInfo = info;
 	}
-	void render(SDL_Renderer * renderer, SDL_Rect & camera, SDL_Rect clip)
+
+	void render(SDL_Renderer* renderer, SDL_Rect& camera, SDL_Rect& clip)
 	{
 		if (checkCollision(camera, box))
 			mptr->tilesTexture.render(renderer, box.x - camera.x, box.y - camera.y, &clip);
 	}
-	void setName(TileInfo tileInfo)
+
+	void setName(TileInfo& _tileInfo)
 	{
-		this->tileInfo = tileInfo;
+		tileInfo = _tileInfo;
 	}
+
 private:
-	bool checkCollision(SDL_Rect a, SDL_Rect b)
+	bool checkCollision(SDL_Rect& a, SDL_Rect& b)
 	{
 		int leftA, leftB;
 		int rightA, rightB;
@@ -60,15 +56,19 @@ private:
 
 		if (bottomA <= topB)
 			return false;
+
 		if (topA >= bottomB)
 			return false;
+
 		if (rightA <= leftB)
 			return false;
+
 		if (leftA >= rightB)
 			return false;
 
 		return true;
 	}
+
 public:
 	TileInfo tileInfo;
 	SDL_Rect box;

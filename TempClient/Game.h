@@ -13,9 +13,7 @@ public:
 		mptr = new Media();
 		charptr = new Character();
 	}
-	~Game()
-	{
-	}
+
 	// -Initializates game components
 	void init()
 	{
@@ -25,33 +23,35 @@ public:
 		// Map loading
 		map.setMap(3200, 2400, "res/lazy", winptr->renderer);
 
-		charptr->setCharacter((char*)"Janusz", 0, 0);
+		charptr->setCharacter(const_cast<char*>("Janusz"), 0, 0);
 	}
+
 	void loop()
 	{
-		Uint32 startClock = SDL_GetTicks();
-		Uint32 deltaClock;
+		Uint64 startClock = SDL_GetPerformanceCounter();
+		Uint64 lastClock = 0;
+
 		while (!quit)
 		{
 			// Fps counter
-			deltaClock = SDL_GetTicks() - startClock;
-			if (deltaClock != 0)
-			{
-				currentFPS = 1000 / deltaClock;
-				startClock = SDL_GetTicks();
-			}
+			lastClock = startClock;
+			startClock = SDL_GetPerformanceCounter();
+
+			currentFPS = 1000.0 / ((startClock - lastClock) * 1000.0 / (double)SDL_GetPerformanceFrequency());
 
 			evptr->checkEvents(quit, charptr->moving);
 			render();
 			update();
 		}
 	}
+
 	void close()
 	{
 		winptr->close();
 		delete winptr;
 		delete evptr;
 	}
+
 private:
 	void render()
 	{
@@ -67,6 +67,7 @@ private:
 
 		SDL_RenderPresent(winptr->renderer);
 	}
+
 	void update()
 	{
 		if (charptr->moving)
@@ -74,8 +75,8 @@ private:
 			charptr->entity.move(map, currentFPS);
 		}
 	}
-private:
-	Uint32 currentFPS;
+
+	double currentFPS;
 
 	bool quit = false;
 
@@ -83,4 +84,4 @@ private:
 	Map map;
 };
 
-Game * gptr;
+Game* gptr;

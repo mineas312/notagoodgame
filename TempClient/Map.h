@@ -2,43 +2,38 @@
 #include <fstream>
 #include "Tile.h"
 #include <string>
+#include <sstream>
 
 class Map
 {
 public:
-	Map()
-	{
-		width = 0;
-		height = 0;
-		totalTiles = 0;
-		tileSet = NULL;
-		tilesPlace = NULL;
-		tileInfo = NULL;
-	}
-	~Map()
-	{
-	}
+	Map() : width{ 0 }, height{ 0 }, totalTiles{ 0 }, tileSet{ NULL }, tilesPlace{ NULL }, tileInfo{ NULL }
+	{}
+
 	// -Call it without extension
 	//   +The files are needed to run map:
 	//     .txt containing all tiles counting from left side in PNG,
 	//     .map containing map data
 	//     .png containing tiles
-	void setMap(int width, int height, const char * path, SDL_Renderer * renderer)
+	void setMap(const int _width, const int _height, const char* path, SDL_Renderer* renderer)
 	{
 		free();
 
-		this->width = width;
-		this->height = height;
-		totalTiles = this->width / TILE_WIDTH * this->height / TILE_HEIGHT;
+		width  = _width;
+		height = _height;
+		totalTiles = width / TILE_WIDTH * height / TILE_HEIGHT;
+		
 		loadTiles(path, renderer);
 	}
-	SDL_Rect * getTilesPlace()
+
+	SDL_Rect* getTilesPlace()
 	{
 		return tilesPlace;
 	}
-	bool collides(SDL_Rect box)
+
+	bool collides(SDL_Rect& box)
 	{
-		// TODO Optimize loop
+		// TODO: Optimize loop
 		for (int i = 0; i < totalTiles; i++)
 		{
 			if (!tileSet[i].tileInfo.canMoveThrough)
@@ -49,13 +44,14 @@ public:
 		}
 		return false;
 	}
+
 private:
-	void loadTiles(const char * path, SDL_Renderer * renderer)
+	void loadTiles(const char* path, SDL_Renderer* renderer)
 	{
-		char * ctxt = new char[strlen(path)+5];
-		strcpy(ctxt, path);
-		strcat(ctxt, ".txt");
-		std::ifstream txt(ctxt);
+		std::stringstream ctxt;
+		ctxt << path << ".txt";
+
+		std::ifstream txt(ctxt.str());
 		if (!txt.is_open())
 		{
 			printf("Unable to load tile's info!\n");
@@ -65,17 +61,18 @@ private:
 		txt >> totalTileSetTiles;
 
 		tilesPlace = new SDL_Rect[totalTileSetTiles];
-
 		tileInfo = new TileInfo[totalTileSetTiles];
 		std::string tmp;
-		int i = 0, d = 0;
+
+		int i = 0;
 		while (std::getline(txt, tmp))
 		{
-			if (!tmp.compare(""))
+			if (tmp == "")
 				continue;
-			if (!tmp.compare("0") || !tmp.compare("1"))
+
+			if (tmp == "0" || tmp == "1")
 			{
-				tileInfo[i].canMoveThrough = atoi(tmp.c_str());
+				tileInfo[i].canMoveThrough = std::atoi(tmp.c_str());
 				i++;
 			}
 			else
@@ -83,33 +80,33 @@ private:
 		}
 		txt.close();
 
-		char * ctile = new char[strlen(path)+5];
-		strcpy(ctile, path);
-		strcat(ctile, ".png");
-		Texture tiles;
-		tiles.loadTexture(ctile, renderer);
-		SDL_Surface * surface = IMG_Load(ctile);
-		int w = surface->w, h = surface->h;
-		tilesFileWidth = w;
+		std::stringstream ctile;
+		ctile << path << ".png";
 
-		delete[] ctxt;
-		delete[] ctile;
+		Texture tiles;
+		tiles.loadTexture(ctile.str().c_str(), renderer);
+		SDL_Surface* surface = IMG_Load(ctile.str().c_str());
+		int w = surface->w;
+		tilesFileWidth = w;
 
 		createTiles(path);
 	}
-	void createTiles(const char * path)
+
+	void createTiles(const char* path)
 	{
 		tileSet = new Tile[totalTiles];
 		int x = 0, y = 0;
-		char * cmap = new char[strlen(path)+5];
-		strcpy(cmap, path);
-		strcat(cmap, ".map");
-		std::ifstream map(cmap);
+
+		std::stringstream cmap;
+
+		cmap << path << ".map";
+
+		std::ifstream map(cmap.str());
 		if (!map.is_open())
 		{
-			printf("Unable to load map file!\n");
-			fprintf(stderr, "Unable to load map file!\n");
-			exit(-4);
+			std::printf("Unable to load map file!\n");
+			std::fprintf(stderr, "Unable to load map file!\n");
+			std::exit(-4);
 		}
 		else
 		{
@@ -117,12 +114,14 @@ private:
 			{
 				int tileType = -1;
 				map >> tileType;
+
 				if (map.fail())
 				{
 					printf("Error loading map: Unexpected end of file!\n");
 					fprintf(stderr, "Error loading map: Unexpected end of file!\n");
 					break;
 				}
+
 				if (tileType >= 0 && tileType <= totalTileSetTiles)
 				{
 					tileSet[i].setTile(x, y, tileType, tileInfo[tileType]);
@@ -133,6 +132,7 @@ private:
 					fprintf(stderr, "Error loading map: Invalid tile type at %d!\n", i);
 					break;
 				}
+
 				x += TILE_WIDTH;
 				if (x >= width)
 				{
@@ -142,9 +142,10 @@ private:
 			}
 		}
 		map.close();
-		delete[] cmap;
+
 		loadTilesPlace();
 	}
+
 	void loadTilesPlace()
 	{
 		for (int i = 0; i < totalTileSetTiles; i++)
@@ -156,12 +157,14 @@ private:
 				widthT -= tilesFileWidth;
 				heightT += TILE_HEIGHT;
 			}
+
 			tilesPlace[i].x = widthT;
 			tilesPlace[i].y = heightT;
 			tilesPlace[i].w = TILE_WIDTH;
 			tilesPlace[i].h = TILE_HEIGHT;
 		}
 	}
+
 	void free()
 	{
 		if (tileSet != NULL)
@@ -169,18 +172,21 @@ private:
 			delete[] tileSet;
 			tileSet = NULL;
 		}
+
 		if (tilesPlace != NULL)
 		{
 			delete[] tilesPlace;
 			tilesPlace = NULL;
 		}
+
 		if (tileInfo != NULL)
 		{
 			delete[] tileInfo;
 			tileInfo = NULL;
 		}
 	}
-	bool checkCollision(SDL_Rect a, SDL_Rect b)
+
+	bool checkCollision(SDL_Rect& a, SDL_Rect& b)
 	{
 		int leftA, leftB;
 		int rightA, rightB;
@@ -208,13 +214,15 @@ private:
 
 		return true;
 	}
+
 private:
 	int tilesFileWidth;
-	TileInfo * tileInfo;
 	int totalTileSetTiles;
+	TileInfo* tileInfo;
+
 public:
-	Tile * tileSet;
-	SDL_Rect * tilesPlace;
+	Tile* tileSet;
+	SDL_Rect* tilesPlace;
 	int width;
 	int height;
 	int totalTiles;

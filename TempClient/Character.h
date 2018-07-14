@@ -4,15 +4,7 @@
 class Character
 {
 public:
-	Character()
-	{
-
-	}
-	~Character()
-	{
-
-	}
-	void setCharacter(char * name, int xPos, int yPos)
+	void setCharacter(char* name, const int xPos, const int yPos)
 	{
 		entity.setEntity(name, xPos, yPos);
 		entity.box.w = mptr->charTexture.getWidth();
@@ -24,4 +16,4 @@ public:
 	bool moving = false;
 };
 
-Character * charptr;
+Character* charptr;

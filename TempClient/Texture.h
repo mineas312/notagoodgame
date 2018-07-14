@@ -9,21 +9,15 @@
 class Texture
 {
 public:
-	Texture()
-	{
-		texture = NULL;
-		width = 0;
-		height = 0;
-	}
-	~Texture()
-	{
+	Texture() : texture{ NULL }, width{ 0 }, height{ 0 }
+	{}
 
-	}
-	bool loadTexture(const char * path, SDL_Renderer * renderer)
+	bool loadTexture(const char* path, SDL_Renderer* renderer)
 	{
 		bool success = true;
 		free();
-		SDL_Surface * loadedSurface = IMG_Load(path);
+
+		SDL_Surface* loadedSurface = IMG_Load(path);
 		if (loadedSurface == NULL)
 		{
 			fprintf(stderr, "Cannot load image %s. SDL_image Error: %s\n", path, IMG_GetError());
@@ -37,6 +31,7 @@ public:
 			texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
 			width = loadedSurface->w;
 			height = loadedSurface->h;
+
 			if (texture == NULL)
 			{
 				fprintf(stderr, "Cannot create texture from %s. SDL Error: %s\n", path, SDL_GetError());
@@ -44,9 +39,11 @@ public:
 				success = false;
 			}
 		}
+
 		SDL_FreeSurface(loadedSurface);
 		return success;
 	}
+
 	void free()
 	{
 		if (texture != NULL)
@@ -57,7 +54,8 @@ public:
 			height = 0;
 		}
 	}
-	void render(SDL_Renderer * renderer, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point * center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE)
+
+	void render(SDL_Renderer* renderer, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE)
 	{
 		SDL_Rect quad = { x, y, width, height };
 		if (clip != NULL)
@@ -67,16 +65,19 @@ public:
 		}
 		SDL_RenderCopyEx(renderer, texture, clip, &quad, angle, center, flip);
 	}
+
 	int getWidth()
 	{
 		return width;
 	}
+
 	int getHeight()
 	{
 		return height;
 	}
+
 private:
-	SDL_Texture * texture;
+	SDL_Texture* texture;
 	int width;
 	int height;
 };
