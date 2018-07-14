@@ -4,14 +4,10 @@
 class Media
 {
 public:
-	void loadMedia(SDL_Renderer* renderer)
-	{
-		tilesTexture.loadTexture("res/lazy.png", renderer);
-		charTexture.loadTexture("res/char.png", renderer);
-	}
+	void loadMedia(SDL_Renderer* renderer);
 
 	Texture tilesTexture;
 	Texture charTexture;
 };
 
-Media* mptr;
+extern Media* mptr;

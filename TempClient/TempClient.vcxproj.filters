@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Game Components">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
@@ -16,42 +12,94 @@
     <Filter Include="Objects">
       <UniqueIdentifier>{5a6a63db-7e27-45a1-bc46-8c271b767367}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Components\Headers">
+      <UniqueIdentifier>{fa2bba19-96e9-4421-8971-adc016e8735f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Components\Sources">
+      <UniqueIdentifier>{1e49dbf1-11b6-4f77-9923-98864c4cf647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Headers">
+      <UniqueIdentifier>{96a25fdb-4209-4e36-be3c-139162909b4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Sources">
+      <UniqueIdentifier>{64bc4845-d2c2-4891-97b3-89ac2669f7c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Game Components\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Game Components\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game Components\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Game Components\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Media.cpp">
+      <Filter>Game Components\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Game Components\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Objects\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Objects\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Objects\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Objects\Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h">
-      <Filter>Game Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Game Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Objects</Filter>
+    <ClInclude Include="Character.h">
+      <Filter>Game Components\Headers</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
-      <Filter>Game Components</Filter>
+      <Filter>Game Components\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game Components\Headers</Filter>
     </ClInclude>
     <ClInclude Include="Media.h">
-      <Filter>Game Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>Game Components</Filter>
+      <Filter>Game Components\Headers</Filter>
     </ClInclude>
     <ClInclude Include="Keyboard.h">
-      <Filter>Game Components</Filter>
+      <Filter>Game Components\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Game Components\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Objects\Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

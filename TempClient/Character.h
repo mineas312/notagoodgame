@@ -4,16 +4,11 @@
 class Character
 {
 public:
-	void setCharacter(char* name, const int xPos, const int yPos)
-	{
-		entity.setEntity(name, xPos, yPos);
-		entity.box.w = mptr->charTexture.getWidth();
-		entity.box.h = mptr->charTexture.getHeight();
-	}
+	void setCharacter(char* name, const int xPos, const int yPos) noexcept;
 
 public:
 	Entity entity;
 	bool moving = false;
 };
 
-Character* charptr;
+extern Character* charptr;
