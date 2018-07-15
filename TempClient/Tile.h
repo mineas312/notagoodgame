@@ -1,6 +1,6 @@
 #pragma once
-#define TILE_WIDTH 20
-#define TILE_HEIGHT 20
+#define TILE_WIDTH 32
+#define TILE_HEIGHT 32
 
 #include "Texture.h"
 #include "Media.h"

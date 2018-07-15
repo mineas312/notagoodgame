@@ -19,7 +19,7 @@ void Window::init()
 		printf("Warning: Linear texture filtering not enabled!\n");
 	}
 
-	window = SDL_CreateWindow("Client", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("Client", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL)
 	{
 		fprintf(stderr, "Cannot create window. Error: %s\n", SDL_GetError());

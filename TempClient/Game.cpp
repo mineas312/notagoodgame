@@ -4,7 +4,7 @@
 
 Game::Game() noexcept
 {
-	winptr = new Window(800, 600);
+	winptr = new Window(1600, 900);
 	evptr = new Event();
 	mptr = new Media();
 	charptr = new Character();
@@ -18,7 +18,7 @@ void Game::init()
 	mptr->loadMedia(winptr->renderer);
 
 	// Map loading
-	map.setMap(3200, 2400, "res/lazy", winptr->renderer);
+	map.setMap(5120, 3840, "res/lazy", winptr->renderer);
 
 	charptr->setCharacter(const_cast<char*>("Janusz"), 0, 0);
 }
@@ -51,8 +51,8 @@ void Game::close()
 
 void Game::render()
 {
-	//SDL_SetRenderDrawColor(winptr->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	//SDL_RenderClear(winptr->renderer);
+	SDL_SetRenderDrawColor(winptr->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(winptr->renderer);
 
 	winptr->centerCamera(charptr->entity.box.x, charptr->entity.box.y, map);
 
