@@ -52,26 +52,14 @@ void Game::close()
 
 void Game::render()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glBindVertexArray(winptr->vao);
 
 	// Bind program
 	glUseProgram(winptr->programID);
 
-	// Enable vertex position
-	glEnableVertexAttribArray(winptr->vertexPos2DLocation);
-
-	//Set vertex data
-	glBindBuffer(GL_ARRAY_BUFFER, winptr->vbo);
-	glVertexAttribPointer(winptr->vertexPos2DLocation, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), NULL);
-
-	//Set index data and render
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, winptr->ibo);
-	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
-
-	//Disable vertex position
-	glDisableVertexAttribArray(winptr->vertexPos2DLocation);
-
-	glUseProgram(NULL);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
 	/*winptr->centerCamera(charptr->entity.box.x, charptr->entity.box.y, map);
 

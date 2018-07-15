@@ -35,6 +35,7 @@ public:
 
 	GLuint programID = 0;
 	GLint vertexPos2DLocation = -1;
+	GLuint vao = 0;
 	GLuint vbo = 0;
 	GLuint ibo = 0;
 

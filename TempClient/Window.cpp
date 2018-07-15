@@ -139,7 +139,7 @@ bool Window::initGL()
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	const GLchar * vertexShaderSource[] =
 	{
-		"#version 450\nin vec2 LVertexPos2D; void main() { gl_Position = vec4( LVertexPos2D.x, LVertexPos2D.y, 0, 1 ); }"
+		"#version 450\nlayout(location = 0) in vec2 LVertexPos2D; void main() { gl_Position = vec4( LVertexPos2D.x, LVertexPos2D.y, 0, 1 ); }"
 	};
 	glShaderSource(vertexShader, 1, vertexShaderSource, NULL);
 
@@ -200,7 +200,7 @@ bool Window::initGL()
 				// TODO DELETE BECAUSE DEBUG
 				else
 				{
-					glClearColor(0.f, 0.f, 0.f, 1.f);
+					glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 					//VBO data 
 					GLfloat vertexData[] = { 
@@ -211,17 +211,22 @@ bool Window::initGL()
 					};
 
 					//IBO data 
-					GLuint indexData[] = { 0, 1, 2, 3 };
+					GLuint indexData[] = { 0, 1, 2, 0, 2, 3 };
+
+					glGenVertexArrays(1, &vao);
+					glBindVertexArray(vao);
 
 					//Create VBO
 					glGenBuffers(1, &vbo);
 					glBindBuffer(GL_ARRAY_BUFFER, vbo);
 					glBufferData(GL_ARRAY_BUFFER, 2 * 4 * sizeof(GLfloat), vertexData, GL_STATIC_DRAW);
+					glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), nullptr);
+					glEnableVertexAttribArray(0);
 
 					//Create IBO
 					glGenBuffers(1, &ibo);
 					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-					glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indexData, GL_STATIC_DRAW);
+					glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indexData, GL_STATIC_DRAW);
 
 				}
 			}
