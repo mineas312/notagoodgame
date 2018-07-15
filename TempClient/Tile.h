@@ -14,6 +14,8 @@ struct TileInfo
 class Tile
 {
 public:
+	Tile() noexcept;
+
 	void setTile(const int x, const int y, const int _type, TileInfo& info);
 
 	void render(SDL_Renderer* renderer, SDL_Rect& camera, SDL_Rect& clip);
@@ -26,5 +28,5 @@ private:
 public:
 	TileInfo tileInfo;
 	SDL_Rect box;
-	int type = 0;
+	int type;
 };

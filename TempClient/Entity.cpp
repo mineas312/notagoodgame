@@ -13,10 +13,6 @@ void Entity::setEntity(char * _name, const int xPos, const int yPos)
 	name = _name;
 	box.x = xPos;
 	box.y = yPos;
-
-	// TODO DELETE
-	box.w = 16;
-	box.h = 22;
 }
 
 void Entity::move(Map & map, const double fps)

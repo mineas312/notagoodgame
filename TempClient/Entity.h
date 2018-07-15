@@ -4,7 +4,7 @@
 class Entity
 {
 public:
-	Entity() noexcept : name{ NULL }, xSpeed{ 0.0 }, ySpeed{ 0.0 }, rxSpeed{ 0.0 }, rySpeed{ 0.0 }
+	Entity() noexcept : box{ 0,0,16,22 }, name { NULL }, xSpeed{ 0.0 }, ySpeed{ 0.0 }, rxSpeed{ 0.0 }, rySpeed{ 0.0 }
 	{}
 
 	void del();

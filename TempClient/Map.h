@@ -4,7 +4,7 @@
 class Map
 {
 public:
-	Map() noexcept : width{ 0 }, height{ 0 }, totalTiles{ 0 }, tileSet{ NULL }, tilesPlace{ NULL }, tileInfo{ NULL }
+	Map() noexcept : tilesFileWidth{ 0 }, totalTileSetTiles { 0 }, width{ 0 }, height{ 0 }, totalTiles{ 0 }, tileSet{ NULL }, tilesPlace{ NULL }, tileInfo{ NULL }
 	{}
 
 	// -Call it without extension

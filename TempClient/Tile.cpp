@@ -2,12 +2,13 @@
 
 #include "Tile.h"
 
+Tile::Tile() noexcept : box{ 0,0,TILE_WIDTH, TILE_HEIGHT }, type{ 0 }
+{}
+
 void Tile::setTile(const int x, const int y, const int _type, TileInfo & info)
 {
 	box.x = x;
 	box.y = y;
-	box.w = TILE_WIDTH;
-	box.h = TILE_HEIGHT;
 	type = _type;
 	tileInfo = info;
 }
