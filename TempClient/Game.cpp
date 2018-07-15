@@ -15,12 +15,13 @@ Game::Game() noexcept
 void Game::init()
 {
 	winptr->init();
-	mptr->loadMedia(winptr->renderer);
+	//mptr->loadMedia(winptr->renderer);
 
 	// Map loading
-	map.setMap(5120, 3840, "res/lazy", winptr->renderer);
+	//map.setMap(5120, 3840, "res/lazy", winptr->renderer);
 
 	charptr->setCharacter(const_cast<char*>("Janusz"), 0, 0);
+	//glClearColor(1.0, 1.0, 1.0, 1.0);
 }
 
 void Game::loop()
@@ -51,17 +52,35 @@ void Game::close()
 
 void Game::render()
 {
-	SDL_SetRenderDrawColor(winptr->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_RenderClear(winptr->renderer);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	winptr->centerCamera(charptr->entity.box.x, charptr->entity.box.y, map);
+	// Bind program
+	glUseProgram(winptr->programID);
+
+	// Enable vertex position
+	glEnableVertexAttribArray(winptr->vertexPos2DLocation);
+
+	//Set vertex data
+	glBindBuffer(GL_ARRAY_BUFFER, winptr->vbo);
+	glVertexAttribPointer(winptr->vertexPos2DLocation, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), NULL);
+
+	//Set index data and render
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, winptr->ibo);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
+
+	//Disable vertex position
+	glDisableVertexAttribArray(winptr->vertexPos2DLocation);
+
+	glUseProgram(NULL);
+
+	/*winptr->centerCamera(charptr->entity.box.x, charptr->entity.box.y, map);
 
 	for (int i = 0; i < map.totalTiles; i++)
 		map.tileSet[i].render(winptr->renderer, winptr->camera, map.tilesPlace[map.tileSet[i].type]);
 
-	mptr->charTexture.render(winptr->renderer, charptr->entity.box.x - winptr->camera.x, charptr->entity.box.y - winptr->camera.y);
+	mptr->charTexture.render(winptr->renderer, charptr->entity.box.x - winptr->camera.x, charptr->entity.box.y - winptr->camera.y);*/
 
-	SDL_RenderPresent(winptr->renderer);
+	SDL_GL_SwapWindow(winptr->window);
 }
 
 void Game::update()

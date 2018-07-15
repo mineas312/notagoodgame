@@ -19,6 +19,8 @@ private:
 
 	void update();
 
+private:
+
 	double currentFPS = 0.0;
 
 	bool quit = false;

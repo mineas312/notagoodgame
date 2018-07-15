@@ -17,3 +17,6 @@
 #include <SDL_image.h>
 #include <SDL_net.h>
 #include <SDL_ttf.h>
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include <SDL_opengl.h>
