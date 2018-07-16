@@ -26,8 +26,11 @@ void Window::init()
 		fprintf(stderr, "Cannot create renderer. Error: %s\n", SDL_GetError());
 		exit(-1);
 	}
+
 	glewExperimental = GL_TRUE;
 	GLenum glewError = glewInit();
+	printf("Using GLEW %s\n", glewGetString(GLEW_VERSION));
+
 	if (glewError != GLEW_OK)
 	{
 		printf("Error initializing GLEW! %s\n", glewGetErrorString(glewError));
