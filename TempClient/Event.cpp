@@ -15,28 +15,28 @@ void Event::checkEvents(bool & quit, bool & moving) noexcept
 			//Adjust the velocity
 			switch (e.key.keysym.sym)
 			{
-			case SDLK_UP:
+			case SDLK_w:
 			{
 				keys[W] = true;
 				moving = true;
 				processKeyEvents(moving);
 				break;
 			}
-			case SDLK_DOWN:
+			case SDLK_s:
 			{
 				keys[S] = true;
 				moving = true;
 				processKeyEvents(moving);
 				break;
 			}
-			case SDLK_LEFT:
+			case SDLK_a:
 			{
 				keys[A] = true;
 				moving = true;
 				processKeyEvents(moving);
 				break;
 			}
-			case SDLK_RIGHT:
+			case SDLK_d:
 			{
 				keys[D] = true;
 				moving = true;
@@ -52,25 +52,25 @@ void Event::checkEvents(bool & quit, bool & moving) noexcept
 			//Adjust the velocity
 			switch (e.key.keysym.sym)
 			{
-			case SDLK_UP:
+			case SDLK_w:
 			{
 				keys[W] = false;
 				processKeyEvents(moving);
 				break;
 			}
-			case SDLK_DOWN:
+			case SDLK_s:
 			{
 				keys[S] = false;
 				processKeyEvents(moving);
 				break;
 			}
-			case SDLK_LEFT:
+			case SDLK_a:
 			{
 				keys[A] = false;
 				processKeyEvents(moving);
 				break;
 			}
-			case SDLK_RIGHT:
+			case SDLK_d:
 			{
 				keys[D] = false;
 				processKeyEvents(moving);
