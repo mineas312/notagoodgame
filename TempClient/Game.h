@@ -12,10 +12,10 @@ public:
 
 	void loop();
 
-	void close();
+	void close() noexcept;
 
 private:
-	void render();
+	void render() noexcept;
 
 	void update();
 

@@ -20,7 +20,7 @@ void Game::init()
 	// Map loading
 	//map.setMap(5120, 3840, "res/lazy", winptr->renderer);
 
-	charptr->setCharacter(const_cast<char*>("Janusz"), 0, 0);
+	charptr->setCharacter((char*)"Janusz", 0, 0);
 	//glClearColor(1.0, 1.0, 1.0, 1.0);
 }
 
@@ -35,7 +35,7 @@ void Game::loop()
 		lastClock = startClock;
 		startClock = SDL_GetPerformanceCounter();
 
-		currentFPS = 1000.0 / ((startClock - lastClock) * 1000.0 / (double)SDL_GetPerformanceFrequency());
+		currentFPS = 1000.0 / ((startClock - lastClock) * 1000.0 / static_cast<double>(SDL_GetPerformanceFrequency()));
 
 		evptr->checkEvents(quit, charptr->moving);
 		render();
@@ -43,14 +43,14 @@ void Game::loop()
 	}
 }
 
-void Game::close()
+void Game::close() noexcept
 {
 	winptr->close();
 	delete winptr;
 	delete evptr;
 }
 
-void Game::render()
+void Game::render() noexcept
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

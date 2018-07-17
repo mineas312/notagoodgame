@@ -2,7 +2,7 @@
 
 #include "Keyboard.h"
 
-void processKeyEvents(bool & moving)
+void processKeyEvents(bool & moving) noexcept
 {
 	if (keys[A])
 		charptr->entity.xSpeed = -300.0;

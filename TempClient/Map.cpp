@@ -19,7 +19,7 @@ void Map::setMap(const int _width, const int _height, const char * path, SDL_Ren
 	loadTiles(path, renderer);
 }
 
-SDL_Rect * Map::getTilesPlace()
+SDL_Rect * Map::getTilesPlace() noexcept
 {
 	return tilesPlace;
 }
@@ -78,7 +78,7 @@ void Map::loadTiles(const char * path, SDL_Renderer * renderer)
 	Texture tiles;
 	tiles.loadTexture(ctile.str().c_str(), renderer);
 	SDL_Surface* surface = IMG_Load(ctile.str().c_str());
-	int w = surface->w;
+	const int w = surface->w;
 	tilesFileWidth = w;
 
 	createTiles(path);
@@ -138,7 +138,7 @@ void Map::createTiles(const char * path)
 	loadTilesPlace();
 }
 
-void Map::loadTilesPlace()
+void Map::loadTilesPlace() noexcept
 {
 	for (int i = 0; i < totalTileSetTiles; i++)
 	{
@@ -178,7 +178,7 @@ void Map::free()
 	}
 }
 
-bool Map::checkCollision(SDL_Rect & a, SDL_Rect & b)
+bool Map::checkCollision(const SDL_Rect & a, const SDL_Rect & b) noexcept
 {
 	int leftA, leftB;
 	int rightA, rightB;

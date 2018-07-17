@@ -2,13 +2,13 @@
 
 #include "Entity.h"
 
-void Entity::del()
+void Entity::del() noexcept
 {
 	delete[] name;
 	name = NULL;
 }
 
-void Entity::setEntity(char * _name, const int xPos, const int yPos)
+void Entity::setEntity(char * _name, const int xPos, const int yPos) noexcept
 {
 	name = _name;
 	box.x = xPos;

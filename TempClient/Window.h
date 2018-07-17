@@ -6,18 +6,18 @@ class Window
 {
 public:
 	// -Sets width and height of window
-	Window(const int width, const int height) : SCREEN_WIDTH{ width }, SCREEN_HEIGHT{ height }, window{ NULL }, context{ NULL }, camera{NULL}
+	Window(const int width, const int height) noexcept : SCREEN_WIDTH{ width }, SCREEN_HEIGHT{ height }, window{ NULL }, context{ NULL }, camera{NULL}
 	{}
 
 	// -Initializes window, renderer
 	void init();
 
-	void centerCamera(const int x, const int y, Map& map);
+	void centerCamera(const int x, const int y, const Map& map) noexcept;
 
-	void close();
+	void close() noexcept;
 
 private:
-	void setOpenGLAtrributes();
+	void setOpenGLAtrributes() noexcept;
 
 	void printProgramLog(GLuint program);
 

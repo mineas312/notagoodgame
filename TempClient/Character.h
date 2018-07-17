@@ -4,7 +4,7 @@
 class Character
 {
 public:
-	void setCharacter(char* name, const int xPos, const int yPos) noexcept;
+	void setCharacter(char* name, const int xPos, const int yPos);
 
 public:
 	Entity entity;

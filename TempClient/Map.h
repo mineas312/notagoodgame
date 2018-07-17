@@ -14,7 +14,7 @@ public:
 	//     .png containing tiles
 	void setMap(const int _width, const int _height, const char* path, SDL_Renderer* renderer);
 
-	SDL_Rect* getTilesPlace();
+	SDL_Rect* getTilesPlace() noexcept;
 
 	bool collides(SDL_Rect& box);
 
@@ -23,11 +23,11 @@ private:
 
 	void createTiles(const char* path);
 
-	void loadTilesPlace();
+	void loadTilesPlace() noexcept;
 
 	void free();
 
-	bool checkCollision(SDL_Rect& a, SDL_Rect& b);
+	bool checkCollision(const SDL_Rect& a, const SDL_Rect& b) noexcept;
 
 private:
 	int tilesFileWidth;
