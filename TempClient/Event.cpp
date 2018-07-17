@@ -2,7 +2,7 @@
 
 #include "Event.h"
 
-void Event::checkEvents(bool & quit, bool & moving) noexcept
+void Event::checkEvents(bool & quit, bool & moving)
 {
 	while (SDL_PollEvent(&e) != 0)
 	{

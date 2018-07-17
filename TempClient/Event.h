@@ -5,7 +5,7 @@
 class Event
 {
 public:
-	__nothrow void checkEvents(bool& quit, bool& moving) noexcept;
+	void checkEvents(bool& quit, bool& moving);
 
 private:
 	SDL_Event e;

@@ -12,4 +12,4 @@ enum KeyBoard
 
 extern bool keys[TOTAL_KEYS];
 
-void processKeyEvents(bool & moving);
+void processKeyEvents(bool & moving) noexcept;
