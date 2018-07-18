@@ -72,7 +72,8 @@ bool Object::loadTexture(const char * path)
 	GLuint texID;
 
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char * data = stbi_load(path, &texWidth, &texHeight, &components, 3);
+	unsigned char * data = stbi_load(path, &texWidth, &texHeight, &components, 4);
+	std::cout << stbi_failure_reason();
 	if (data != NULL)
 	{
 		glActiveTexture(0);

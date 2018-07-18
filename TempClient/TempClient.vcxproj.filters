@@ -63,9 +63,6 @@
     <ClCompile Include="Tile.cpp">
       <Filter>Objects\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>Game Components\Sources</Filter>
     </ClCompile>
@@ -73,6 +70,9 @@
       <Filter>Objects\Sources</Filter>
     </ClCompile>
     <ClCompile Include="stb_image.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glad.c">
       <Filter>PCH</Filter>
     </ClCompile>
   </ItemGroup>

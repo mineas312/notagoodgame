@@ -11,55 +11,45 @@ Shader::Shader(const char * vs, const char * fs) : isValid{ false }, VSID { 0 },
 
 bool Shader::InitShader(const char * vs, const char * fs)
 {
-	// Potencjalnie wielow¹tkowe renderowanie shaderów
 	std::string tmp;
-	
-	// Vertex Shader
-	std::ifstream vsFile(vs);
-	if (!vsFile.good())
+
+	std::stringstream vsSS;
+	std::stringstream fsSS;
+
+	std::fstream vsFile(vs, std::ios::in | std::ios::beg);
+	std::fstream fsFile(fs, std::ios::in | std::ios::beg);
+
+	while (std::getline(vsFile, tmp))
 	{
-		fprintf(stderr, "Error opening Vertex Shader file");
-		vsFile.close();
-		isValid = false;
-		return false;
+		vsSS << tmp << "\n";
 	}
 
-	GLchar * vsSource;
+	while (std::getline(fsFile, tmp))
+	{
+		fsSS << tmp << "\n";
+	}
 
-	int length;
-	vsFile.seekg(0, std::ios::end);
-	length = vsFile.tellg();
-	vsFile.seekg(0, std::ios::beg);
-	vsSource = new GLchar[length];
-	vsFile.read(vsSource, length);
+	std::string vsCode = vsSS.str();
+	std::string fsCode = fsSS.str();
 
+	GLchar* vsPomocy = new GLchar[vsCode.size()+1];
+	GLchar* fsPomocy = new GLchar[fsCode.size()+1];
+
+	std::memcpy(vsPomocy, vsCode.data(), vsCode.size());
+	std::memcpy(fsPomocy, fsCode.data(), fsCode.size());
+
+	vsPomocy[vsCode.size()] = '\0';
+	fsPomocy[fsCode.size()] = '\0';
 
 	VSID = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(VSID, 1, &vsSource, NULL);
+	glShaderSource(VSID, 1, &vsPomocy, NULL);
 	glCompileShader(VSID);
 	vsFile.close();
 
-	std::ifstream fsFile(fs);
-	if (!fsFile.good())
-	{
-		fprintf(stderr, "Error opening Fragment Shader file");
-		fsFile.close();
-		isValid = false;
-		return false;
-	}
-
-	GLchar * fsSource;
-
-	int length2;
-	fsFile.seekg(0, std::ios::end);
-	length2 = fsFile.tellg();
-	fsFile.seekg(0, std::ios::beg);
-	fsSource = new GLchar[length2];
-	fsFile.read(fsSource, length2);
-
 	FSID = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(FSID, 1, &fsSource, NULL);
+	glShaderSource(FSID, 1, &fsPomocy, NULL);
 	glCompileShader(FSID);
+	fsFile.close();
 
 	Log(VSID);
 	Log(FSID);
@@ -69,6 +59,67 @@ bool Shader::InitShader(const char * vs, const char * fs)
 	glAttachShader(ProgID, VSID);
 	glAttachShader(ProgID, FSID);
 	glLinkProgram(ProgID);
+
+	delete[] vsPomocy;
+	delete[] fsPomocy;
+
+	//// Potencjalnie wielow¹tkowe renderowanie shaderów
+	//std::string tmp;
+	//
+	//// Vertex Shader
+	//std::ifstream vsFile(vs);
+	//if (!vsFile.good())
+	//{
+	//	fprintf(stderr, "Error opening Vertex Shader file");
+	//	vsFile.close();
+	//	isValid = false;
+	//	return false;
+	//}
+
+	//GLchar * vsSource;
+
+	//int length;
+	//vsFile.seekg(0, std::ios::end);
+	//length = vsFile.tellg();
+	//vsFile.seekg(0, std::ios::beg);
+	//vsSource = new GLchar[length+1];
+	//vsFile.read(vsSource, length);
+
+	//VSID = glCreateShader(GL_VERTEX_SHADER);
+	//glShaderSource(VSID, 1, &vsSource, NULL);
+	//glCompileShader(VSID);
+	//vsFile.close();
+
+	//std::ifstream fsFile(fs);
+	//if (!fsFile.good())
+	//{
+	//	fprintf(stderr, "Error opening Fragment Shader file");
+	//	fsFile.close();
+	//	isValid = false;
+	//	return false;
+	//}
+
+	//GLchar * fsSource;
+
+	//int length2;
+	//fsFile.seekg(0, std::ios::end);
+	//length2 = fsFile.tellg();
+	//fsFile.seekg(0, std::ios::beg);
+	//fsSource = new GLchar[length2+1];
+	//fsFile.read(fsSource, length2);
+
+	//FSID = glCreateShader(GL_FRAGMENT_SHADER);
+	//glShaderSource(FSID, 1, &fsSource, NULL);
+	//glCompileShader(FSID);
+
+	//Log(VSID);
+	//Log(FSID);
+
+	//ProgID = glCreateProgram();
+
+	//glAttachShader(ProgID, VSID);
+	//glAttachShader(ProgID, FSID);
+	//glLinkProgram(ProgID);
 
 	Log(ProgID);
 
