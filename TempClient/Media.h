@@ -1,13 +1,13 @@
 #pragma once
-#include "Texture.h"
+#include "Object.h"
 
 class Media
 {
 public:
-	void loadMedia(SDL_Renderer* renderer);
+	void loadMedia();
 
-	Texture tilesTexture;
-	Texture charTexture;
+	Object tilesTexture;
+	Object charTexture;
 };
 
 extern Media* mptr;

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include "Shader.h"
 #include "Game.h"
 
 Game::Game() noexcept
@@ -8,6 +8,7 @@ Game::Game() noexcept
 	evptr = new Event();
 	mptr = new Media();
 	charptr = new Character();
+	shadptr = new Shader();
 }
 
 // -Initializates game components
@@ -15,10 +16,11 @@ Game::Game() noexcept
 void Game::init()
 {
 	winptr->init();
-	//mptr->loadMedia(winptr->renderer);
+	shadptr->InitShader("res/shaders/vs.txt", "res/shaders/fs.txt");
+	mptr->loadMedia();
 
-	// Map loading
-	//map.setMap(5120, 3840, "res/lazy", winptr->renderer);
+	//Map loading
+	map.setMap(5120, 3840, "res/lazy");
 
 	charptr->setCharacter((char*)"Janusz", 0, 0);
 	//glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -28,6 +30,8 @@ void Game::loop()
 {
 	Uint64 startClock = SDL_GetPerformanceCounter();
 	Uint64 lastClock = 0;
+
+	glUseProgram(shadptr->ProgID);
 
 	while (!quit)
 	{
@@ -54,19 +58,12 @@ void Game::render() noexcept
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glBindVertexArray(winptr->vao);
-
-	// Bind program
-	glUseProgram(winptr->programID);
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-
-	/*winptr->centerCamera(charptr->entity.box.x, charptr->entity.box.y, map);
+	winptr->centerCamera(charptr->entity.box.x, charptr->entity.box.y, map);
 
 	for (int i = 0; i < map.totalTiles; i++)
-		map.tileSet[i].render(winptr->renderer, winptr->camera, map.tilesPlace[map.tileSet[i].type]);
+		map.tileSet[i].render(winptr->camera);
 
-	mptr->charTexture.render(winptr->renderer, charptr->entity.box.x - winptr->camera.x, charptr->entity.box.y - winptr->camera.y);*/
+	mptr->charTexture.render(charptr->entity.box.x - winptr->camera.x, charptr->entity.box.y - winptr->camera.y);
 
 	SDL_GL_SwapWindow(winptr->window);
 }

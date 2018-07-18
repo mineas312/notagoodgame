@@ -2,10 +2,10 @@
 
 #include "Media.h"
 
-void Media::loadMedia(SDL_Renderer * renderer)
+void Media::loadMedia()
 {
-	tilesTexture.loadTexture("res/lazy.png", renderer);
-	charTexture.loadTexture("res/char.png", renderer);
+	tilesTexture.setObject("res/lazy.png");
+	charTexture.setObject("res/char.png");
 }
 
 Media* mptr;

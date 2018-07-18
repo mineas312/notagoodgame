@@ -5,18 +5,19 @@
 Tile::Tile() noexcept : box{ 0,0,TILE_WIDTH, TILE_HEIGHT }, type{ 0 }
 {}
 
-void Tile::setTile(const int x, const int y, const int _type, TileInfo & info)
+void Tile::setTile(const int x, const int y, const int _type, TileInfo & info, SDL_Rect & _clip)
 {
 	box.x = x;
 	box.y = y;
 	type = _type;
 	tileInfo = info;
+	clip = _clip;
 }
 
-void Tile::render(SDL_Renderer * renderer, SDL_Rect & camera, SDL_Rect & clip)
+void Tile::render(SDL_Rect & camera)
 {
 	if (checkCollision(camera, box))
-		mptr->tilesTexture.render(renderer, box.x - camera.x, box.y - camera.y, &clip);
+		mptr->tilesTexture.render(box.x - camera.x, box.y - camera.y);
 }
 
 void Tile::setName(TileInfo & _tileInfo)

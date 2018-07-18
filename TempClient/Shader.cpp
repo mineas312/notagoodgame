@@ -24,14 +24,18 @@ bool Shader::InitShader(const char * vs, const char * fs)
 		return false;
 	}
 
-	while (std::getline(vsFile, tmp))
-		vsCode << tmp;
+	GLchar * vsSource;
 
-	const GLchar* vsSource = vsCode.str().c_str();
-	const GLint vsSize = static_cast<GLint>(std::strlen(vsSource));
+	int length;
+	vsFile.seekg(0, std::ios::end);
+	length = vsFile.tellg();
+	vsFile.seekg(0, std::ios::beg);
+	vsSource = new GLchar[length];
+	vsFile.read(vsSource, length);
+
 
 	VSID = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(VSID, 1, &vsSource, &vsSize);
+	glShaderSource(VSID, 1, &vsSource, NULL);
 	glCompileShader(VSID);
 	vsFile.close();
 
@@ -43,15 +47,18 @@ bool Shader::InitShader(const char * vs, const char * fs)
 		isValid = false;
 		return false;
 	}
-	while (std::getline(fsFile, tmp))
-		fsCode << tmp;
-	fsFile.close();
 
-	const GLchar* fsSource = fsCode.str().c_str();
-	const GLint fsSize = static_cast<GLint>(std::strlen(fsSource));
+	GLchar * fsSource;
+
+	int length2;
+	fsFile.seekg(0, std::ios::end);
+	length2 = fsFile.tellg();
+	fsFile.seekg(0, std::ios::beg);
+	fsSource = new GLchar[length2];
+	fsFile.read(fsSource, length2);
 
 	FSID = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(FSID, 1, &fsSource, &fsSize);
+	glShaderSource(FSID, 1, &fsSource, NULL);
 	glCompileShader(FSID);
 
 	Log(VSID);
@@ -99,3 +106,4 @@ void Shader::Log(GLuint ID)
 		}
 	}
 }
+Shader * shadptr;

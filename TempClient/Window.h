@@ -6,7 +6,7 @@ class Window
 {
 public:
 	// -Sets width and height of window
-	Window(const int width, const int height) noexcept : SCREEN_WIDTH{ width }, SCREEN_HEIGHT{ height }, window{ NULL }, context{ NULL }, camera{NULL}
+	Window(const int width, const int height) noexcept : SCREEN_WIDTH{ width }, SCREEN_HEIGHT{ height }, window{ NULL }, context{ NULL }, camera{ NULL }, rangePerWidthPixel { 2.0f / SCREEN_WIDTH }, rangePerHeightPixel { 2.0f / SCREEN_HEIGHT }
 	{}
 
 	// -Initializes window, renderer
@@ -19,21 +19,17 @@ public:
 private:
 	void setOpenGLAtrributes() noexcept;
 
-	void printProgramLog(GLuint program);
-
-	void printShaderLog(GLuint shader);
-
-	bool initGL();
-
 public:
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 
-	SDL_Window* window;
+	float rangePerWidthPixel;
+	float rangePerHeightPixel;
+
+	SDL_Window * window;
 	SDL_Rect camera;
 	SDL_GLContext context;
 
-	GLuint programID = 0;
 	GLint vertexPos2DLocation = -1;
 	GLuint vao = 0;
 	GLuint vbo = 0;

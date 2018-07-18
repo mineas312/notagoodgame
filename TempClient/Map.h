@@ -12,14 +12,14 @@ public:
 	//     .txt containing all tiles counting from left side in PNG,
 	//     .map containing map data
 	//     .png containing tiles
-	void setMap(const int _width, const int _height, const char* path, SDL_Renderer* renderer);
+	void setMap(const int _width, const int _height, const char* path);
 
 	SDL_Rect* getTilesPlace() noexcept;
 
 	bool collides(SDL_Rect& box);
 
 private:
-	void loadTiles(const char* path, SDL_Renderer* renderer);
+	void loadTiles(const char* path);
 
 	void createTiles(const char* path);
 

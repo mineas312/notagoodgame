@@ -4,8 +4,8 @@
 void Character::setCharacter(char * name, const int xPos, const int yPos)
 {
 	entity.setEntity(name, xPos, yPos);
-	entity.box.w = mptr->charTexture.getWidth();
-	entity.box.h = mptr->charTexture.getHeight();
+	entity.box.w = mptr->charTexture.texWidth;
+	entity.box.h = mptr->charTexture.texHeight;
 }
 
 Character* charptr;

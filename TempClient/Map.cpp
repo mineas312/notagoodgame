@@ -8,7 +8,7 @@
 //     .map containing map data
 //     .png containing tiles
 
-void Map::setMap(const int _width, const int _height, const char * path, SDL_Renderer * renderer)
+void Map::setMap(const int _width, const int _height, const char * path)
 {
 	free();
 
@@ -16,7 +16,7 @@ void Map::setMap(const int _width, const int _height, const char * path, SDL_Ren
 	height = _height;
 	totalTiles = width / TILE_WIDTH * height / TILE_HEIGHT;
 
-	loadTiles(path, renderer);
+	loadTiles(path);
 }
 
 SDL_Rect * Map::getTilesPlace() noexcept
@@ -38,7 +38,7 @@ bool Map::collides(SDL_Rect & box)
 	return false;
 }
 
-void Map::loadTiles(const char * path, SDL_Renderer * renderer)
+void Map::loadTiles(const char * path)
 {
 	std::stringstream ctxt;
 	ctxt << path << ".txt";
@@ -75,8 +75,8 @@ void Map::loadTiles(const char * path, SDL_Renderer * renderer)
 	std::stringstream ctile;
 	ctile << path << ".png";
 
-	Texture tiles;
-	tiles.loadTexture(ctile.str().c_str(), renderer);
+	Object tiles;
+	tiles.setObject(ctile.str().c_str());
 	SDL_Surface* surface = IMG_Load(ctile.str().c_str());
 	const int w = surface->w;
 	tilesFileWidth = w;
@@ -102,6 +102,8 @@ void Map::createTiles(const char * path)
 	}
 	else
 	{
+		loadTilesPlace();
+
 		for (int i = 0; i < totalTiles; i++)
 		{
 			int tileType = -1;
@@ -116,7 +118,7 @@ void Map::createTiles(const char * path)
 
 			if (tileType >= 0 && tileType <= totalTileSetTiles)
 			{
-				tileSet[i].setTile(x, y, tileType, tileInfo[tileType]);
+				tileSet[i].setTile(x, y, tileType, tileInfo[tileType], tilesPlace[tileType]);
 			}
 			else
 			{
@@ -134,8 +136,6 @@ void Map::createTiles(const char * path)
 		}
 	}
 	map.close();
-
-	loadTilesPlace();
 }
 
 void Map::loadTilesPlace() noexcept
