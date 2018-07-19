@@ -53,18 +53,35 @@ void Window::init()
 		glMaxShaderCompilerThreadsKHR(maxThreads);
 
 #ifdef _DEBUG
-	// Debug output introduced as core in OpenGL 4.3
-	printf("OpenGL debug output is enabled\n\n");
-	fprintf(stderr, "OpenGL debug output is enabled\n\n");
 
-	// Enable debug output
-	glEnable(GL_DEBUG_OUTPUT);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	if (GLAD_GL_KHR_debug)
+	{
+		printf("OpenGL debug output KHR is enabled\n\n");
+		fprintf(stderr, "OpenGL debug output KHR is enabled\n\n");
+		// Enable debug output
+		glEnable(GL_DEBUG_OUTPUT_KHR);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_KHR);
 
-	// Enable all messages and test output
-	glDebugMessageCallback(oglDebugCallback, nullptr);
-	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_NOTIFICATION, 21, "Debug test message\0");
+		// Enable all messages and test output
+		glDebugMessageCallbackKHR(oglDebugCallback, nullptr);
+		glDebugMessageControlKHR(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+		glDebugMessageInsertKHR(GL_DEBUG_SOURCE_APPLICATION_KHR, GL_DEBUG_TYPE_OTHER_KHR, 0, GL_DEBUG_SEVERITY_NOTIFICATION_KHR, 21, "Debug test message KHR\0");
+	}
+	else // Debug output introduced as core in OpenGL 4.3
+	{
+		printf("OpenGL debug output is enabled\n\n");
+		fprintf(stderr, "OpenGL debug output is enabled\n\n");
+
+		// Enable debug output
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+		// Enable all messages and test output
+		glDebugMessageCallback(oglDebugCallback, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+		glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_NOTIFICATION, 21, "Debug test message\0");
+	}
+	
 #endif
 
 	//// Vsync
