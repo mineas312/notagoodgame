@@ -2,7 +2,7 @@
 #define TILE_WIDTH 32
 #define TILE_HEIGHT 32
 
-#include "Object.h"
+#include "Texture.h"
 #include "Media.h"
 
 struct TileInfo
@@ -16,7 +16,7 @@ class Tile
 public:
 	Tile() noexcept;
 
-	void setTile(const int x, const int y, const int _type, TileInfo& info, SDL_Rect & clip);
+	void setTile(const int x, const int y, const int _type, TileInfo& info);
 
 	void render(SDL_Rect& camera);
 
@@ -29,5 +29,4 @@ public:
 	TileInfo tileInfo;
 	SDL_Rect box;
 	int type;
-	SDL_Rect clip;
 };

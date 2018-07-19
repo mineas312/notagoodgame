@@ -2,10 +2,13 @@
 
 #include "Media.h"
 
+Media::Media() noexcept : mapTilesTexture{ NULL }
+{
+}
+
 void Media::loadMedia()
 {
-	tilesTexture.setObject("res/lazy.png");
-	charTexture.setObject("res/char.png");
+	charTexture.setTexture("res/char.png");
 }
 
 Media* mptr;

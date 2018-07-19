@@ -1,13 +1,16 @@
 #pragma once
-#include "Object.h"
+#include "Texture.h"
 
 class Media
 {
 public:
+	Media() noexcept;
+
 	void loadMedia();
 
-	Object tilesTexture;
-	Object charTexture;
+public:
+	Texture charTexture;
+	Texture * mapTilesTexture;
 };
 
 extern Media* mptr;

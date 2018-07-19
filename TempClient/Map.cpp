@@ -72,16 +72,29 @@ void Map::loadTiles(const char * path)
 	}
 	txt.close();
 
+	if (mptr->mapTilesTexture != NULL)
+	{
+		delete[] mptr->mapTilesTexture;
+		mptr->mapTilesTexture = NULL;
+	}
+
 	std::stringstream ctile;
 	ctile << path << ".png";
 
-	Object tiles;
-	tiles.setObject(ctile.str().c_str());
-	SDL_Surface* surface = IMG_Load(ctile.str().c_str());
-	const int w = surface->w;
-	tilesFileWidth = w;
+	Texture * tiles = new Texture[totalTileSetTiles];
+
+	// Dimension check
+	tiles[0].setTexture(ctile.str().c_str());
+	tilesFileWidth = tiles[0].texWidth;
 
 	createTiles(path);
+
+	for (int i = 0; i < totalTileSetTiles; i++)
+	{
+		tiles[i].setTexture(ctile.str().c_str(), &tilesPlace[i]);
+	}
+
+	mptr->mapTilesTexture = tiles;
 }
 
 void Map::createTiles(const char * path)
@@ -118,7 +131,7 @@ void Map::createTiles(const char * path)
 
 			if (tileType >= 0 && tileType <= totalTileSetTiles)
 			{
-				tileSet[i].setTile(x, y, tileType, tileInfo[tileType], tilesPlace[tileType]);
+				tileSet[i].setTile(x, y, tileType, tileInfo[tileType]);
 			}
 			else
 			{

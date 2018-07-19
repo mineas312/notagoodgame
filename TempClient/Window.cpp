@@ -3,7 +3,7 @@
 #include "Window.h"
 #include "OGLDebug.h"
 
-// -Initializes window, renderer
+// -Initializes window
 
 void Window::init()
 {
@@ -26,8 +26,8 @@ void Window::init()
 	context = SDL_GL_CreateContext(window);
 	if (context == NULL)
 	{
-		printf("Cannot create renderer.Error: %s\n", SDL_GetError());
-		fprintf(stderr, "Cannot create renderer. Error: %s\n", SDL_GetError());
+		printf("Cannot create context.Error: %s\n", SDL_GetError());
+		fprintf(stderr, "Cannot create context. Error: %s\n", SDL_GetError());
 		std::exit(-1);
 	}
 

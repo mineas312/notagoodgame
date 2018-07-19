@@ -9,7 +9,7 @@ public:
 	Window(const int width, const int height) noexcept : SCREEN_WIDTH{ width }, SCREEN_HEIGHT{ height }, window{ NULL }, context{ NULL }, camera{ NULL }, rangePerWidthPixel { 2.0f / SCREEN_WIDTH }, rangePerHeightPixel { 2.0f / SCREEN_HEIGHT }
 	{}
 
-	// -Initializes window, renderer
+	// -Initializes window
 	void init();
 
 	void centerCamera(const int x, const int y, const Map& map) noexcept;

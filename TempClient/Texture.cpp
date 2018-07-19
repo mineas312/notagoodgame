@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Window.h"
-#include "Object.h"
+#include "Texture.h"
 #include "Shader.h"
 #include <stb_image.h>
 
-void Object::render(int x, int y)
+void Texture::render(int x, int y)
 {
 	glBindVertexArray(vao);
 
@@ -17,7 +17,7 @@ void Object::render(int x, int y)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 }
 
-void Object::setObject(const char * path, SDL_Rect * clip)
+void Texture::setTexture(const char * path, SDL_Rect * clip)
 {
 	loadTexture(path);
 
@@ -68,14 +68,14 @@ void Object::setObject(const char * path, SDL_Rect * clip)
 	glUniform1i(glGetUniformLocation(shadptr->ProgID, "sampler"), 0);
 }
 
-bool Object::loadTexture(const char * path)
+bool Texture::loadTexture(const char * path)
 {
 	free();
 	int components;
 	GLuint texID;
 
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char * data = stbi_load(path, &texWidth, &texHeight, &components, 4);
+	unsigned char * data = stbi_load(path, &texWidth, &texHeight, &components, 3);
 	if (data != NULL)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -100,7 +100,7 @@ bool Object::loadTexture(const char * path)
 	return false;
 }
 
-void Object::free()
+void Texture::free()
 {
 	glDeleteTextures(1, &texture);
 }

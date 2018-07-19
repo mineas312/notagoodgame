@@ -11,15 +11,15 @@
 #define KEY_COLOR_G 0xFF
 #define KEY_COLOR_B 0xFF
 
-class Object
+class Texture
 {
 public:
-	Object() noexcept : width{ 0.0f }, height{ 0.0f }, texWidth{ 0 }, texHeight{ 0 }, rangePerWidthTex{ 0.0f }, rangePerHeightTex{ 0.0f }
+	Texture() noexcept : width{ 0.0f }, height{ 0.0f }, texWidth{ 0 }, texHeight{ 0 }, rangePerWidthTex{ 0.0f }, rangePerHeightTex{ 0.0f }
 	{}
 
 	void render(int x, int y);
 
-	void setObject(const char * path, SDL_Rect * clip = NULL);
+	void setTexture(const char * path, SDL_Rect * clip = NULL);
 
 private:
 	bool loadTexture(const char * path);
