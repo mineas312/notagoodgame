@@ -9,6 +9,9 @@ void Texture::render(int x, int y)
 	glBindVertexArray(vao);
 
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x * winptr->rangePerWidthPixel, -y * winptr->rangePerHeightPixel, 0.0f));
+	glm::mat4 proj = glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f);
+
+	model = proj * model;
 
 	glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
