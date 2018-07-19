@@ -6,13 +6,11 @@ class Window
 {
 public:
 	// -Sets width and height of window
-	Window(const int width, const int height) noexcept : SCREEN_WIDTH{ width }, SCREEN_HEIGHT{ height }, window{ NULL }, context{ NULL }, camera{ NULL }, rangePerWidthPixel { 2.0f / SCREEN_WIDTH }, rangePerHeightPixel { 2.0f / SCREEN_HEIGHT }
+	Window(const int width, const int height) noexcept : SCREEN_WIDTH{ width }, SCREEN_HEIGHT{ height }, window{ NULL }, context{ NULL }, rangePerWidthPixel { 2.0f / SCREEN_WIDTH }, rangePerHeightPixel { 2.0f / SCREEN_HEIGHT }
 	{}
 
 	// -Initializes window
 	void init();
-
-	void centerCamera(const int x, const int y, const Map& map) noexcept;
 
 	void close() noexcept;
 
@@ -27,7 +25,6 @@ public:
 	float rangePerHeightPixel;
 
 	SDL_Window * window;
-	SDL_Rect camera;
 	SDL_GLContext context;
 
 	GLint vertexPos2DLocation = -1;

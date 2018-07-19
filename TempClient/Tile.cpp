@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include "Camera.h"
 #include "Tile.h"
 
 Tile::Tile() noexcept : box{ 0,0,TILE_WIDTH, TILE_HEIGHT }, type{ 0 }
@@ -13,10 +13,10 @@ void Tile::setTile(const int x, const int y, const int _type, TileInfo & info)
 	tileInfo = info;
 }
 
-void Tile::render(SDL_Rect & camera)
+void Tile::render()
 {
-	if (checkCollision(camera, box))
-		mptr->mapTilesTexture[type].render(box.x - camera.x, box.y - camera.y);
+	if (checkCollision(camptr->camRect, box))
+		mptr->mapTilesTexture[type].render(box.x, box.y);
 }
 
 void Tile::setName(TileInfo & _tileInfo)

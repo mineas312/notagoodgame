@@ -21,6 +21,7 @@
 #include <SDL_net.h>
 #include <SDL_ttf.h>
 
+#define GLM_FORCE_SSE3
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>

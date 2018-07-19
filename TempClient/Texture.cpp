@@ -3,15 +3,15 @@
 #include "Texture.h"
 #include "Shader.h"
 #include <stb_image.h>
+#include "Camera.h"
 
 void Texture::render(int x, int y)
 {
 	glBindVertexArray(vao);
 
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x * winptr->rangePerWidthPixel, -y * winptr->rangePerHeightPixel, 0.0f));
-	glm::mat4 proj = glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f);
 
-	model = proj * model;
+	model = camptr->proj * camptr->view * model;
 
 	glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
@@ -97,8 +97,8 @@ bool Texture::loadTexture(const char * path)
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		delete[] data;

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Shader.h"
 #include "Game.h"
+#include "Camera.h"
 
 Game::Game() noexcept
 {
@@ -9,6 +10,7 @@ Game::Game() noexcept
 	mptr = new Media();
 	charptr = new Character();
 	shadptr = new Shader();
+	camptr = new Camera();
 }
 
 // -Initializates game components
@@ -18,6 +20,7 @@ void Game::init()
 	winptr->init();
 	shadptr->InitShader("res/shaders/vs.txt", "res/shaders/fs.txt");
 	mptr->loadMedia();
+	camptr->init();
 
 	//Map loading
 	map.setMap(5120, 3840, "res/lazy");
@@ -58,12 +61,12 @@ void Game::render() noexcept
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	winptr->centerCamera(charptr->entity.box.x, charptr->entity.box.y, map);
+	camptr->center(charptr->entity.box.x, -charptr->entity.box.y);
 
 	for (int i = 0; i < map.totalTiles; i++)
-		map.tileSet[i].render(winptr->camera);
+		map.tileSet[i].render();
 
-	mptr->charTexture.render(charptr->entity.box.x - winptr->camera.x, charptr->entity.box.y - winptr->camera.y);
+	mptr->charTexture.render(charptr->entity.box.x, charptr->entity.box.y);
 
 	SDL_GL_SwapWindow(winptr->window);
 }

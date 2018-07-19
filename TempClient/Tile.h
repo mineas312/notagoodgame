@@ -18,7 +18,7 @@ public:
 
 	void setTile(const int x, const int y, const int _type, TileInfo& info);
 
-	void render(SDL_Rect& camera);
+	void render();
 
 	void setName(TileInfo& _tileInfo);
 

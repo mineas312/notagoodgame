@@ -81,6 +81,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Objects\Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Game Components\Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h">
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Game Components\Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
