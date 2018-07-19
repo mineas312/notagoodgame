@@ -12,6 +12,8 @@ void Object::render(int x, int y)
 
 	glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
+	glBindTexture(GL_TEXTURE_2D, texture);
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 }
 
@@ -62,6 +64,7 @@ void Object::setObject(const char * path, SDL_Rect * clip)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indexData, GL_STATIC_DRAW);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
+	// TODO: Tu (przy uniformie) wywala b³¹d ¿e nie ma zbindowanego shader programu. WeŸ to sprawdŸ
 	glUniform1i(glGetUniformLocation(shadptr->ProgID, "sampler"), 0);
 }
 
@@ -73,10 +76,9 @@ bool Object::loadTexture(const char * path)
 
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char * data = stbi_load(path, &texWidth, &texHeight, &components, 4);
-	std::cout << stbi_failure_reason();
 	if (data != NULL)
 	{
-		glActiveTexture(0);
+		glActiveTexture(GL_TEXTURE0);
 		glGenTextures(1, &texID);
 		glBindTexture(GL_TEXTURE_2D, texID);
 

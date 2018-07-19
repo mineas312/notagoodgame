@@ -197,11 +197,11 @@ bool Map::checkCollision(const SDL_Rect & a, const SDL_Rect & b) noexcept
 
 	if (bottomA <= topB)
 		return false;
-	if (topA >= bottomB)
+	if (bottomB <= topA)
 		return false;
 	if (rightA <= leftB)
 		return false;
-	if (leftA >= rightB)
+	if (rightB <= leftA)
 		return false;
 
 	return true;

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Window.h"
+#include "OGLDebug.h"
 
 // -Initializes window, renderer
 
@@ -8,23 +9,26 @@ void Window::init()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
+		printf("Cannot init SDL. Error: %s\n", SDL_GetError());
 		fprintf(stderr, "Cannot init SDL. Error: %s\n", SDL_GetError());
-		exit(-1);
+		std::exit(-1);
 	}
 
 	window = SDL_CreateWindow("Client", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
 	if (window == NULL)
 	{
+		printf("Cannot create window. Error: %s\n", SDL_GetError());
 		fprintf(stderr, "Cannot create window. Error: %s\n", SDL_GetError());
-		exit(-1);
+		std::exit(-1);
 	}
 
 	setOpenGLAtrributes();
 	context = SDL_GL_CreateContext(window);
 	if (context == NULL)
 	{
+		printf("Cannot create renderer.Error: %s\n", SDL_GetError());
 		fprintf(stderr, "Cannot create renderer. Error: %s\n", SDL_GetError());
-		exit(-1);
+		std::exit(-1);
 	}
 
 	// glad
@@ -48,12 +52,30 @@ void Window::init()
 	else if (GLAD_GL_KHR_parallel_shader_compile)
 		glMaxShaderCompilerThreadsKHR(maxThreads);
 
-	// Vsync
-	if (SDL_GL_SetSwapInterval(1) < 0)
-	{
-		printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-		fprintf(stderr, "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-	}
+#ifdef _DEBUG
+	// Debug output introduced as core in OpenGL 4.3
+	printf("OpenGL debug output is enabled\n\n");
+	fprintf(stderr, "OpenGL debug output is enabled\n\n");
+
+	// Enable debug output
+	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+	// Enable all messages and test output
+	glDebugMessageCallback(oglDebugCallback, nullptr);
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_NOTIFICATION, 21, "Debug test message\0");
+#endif
+
+	//// Vsync
+	//if (SDL_GL_SetSwapInterval(1) < 0)
+	//{
+	//	printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+	//	fprintf(stderr, "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+	//}
+
+	SDL_GL_SetSwapInterval(0);
+
 	//Init PNG loading
 	const int imgFlags = IMG_INIT_PNG;
 	if (!(IMG_Init(imgFlags) & imgFlags))
@@ -102,7 +124,7 @@ void Window::setOpenGLAtrributes() noexcept
 #endif
 #ifndef _DEBUG
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_NO_ERROR, 1);
-#endif // !_DEBUG
+#endif
 }
 
 Window* winptr;
