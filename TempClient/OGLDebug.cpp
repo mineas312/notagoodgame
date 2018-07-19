@@ -81,13 +81,13 @@ void DetermineSeverity(GLenum severity, std::stringstream& ss)
 	}
 }
 
-void APIENTRY oglDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity​, GLsizei length​, const GLchar* message​, const void* userParams​)
+void APIENTRY oglDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	std::stringstream outStream;
-	DetermineSeverity(severity​, outStream);
+	DetermineSeverity(severity, outStream);
 	DetermineSource(source, outStream);
 	DetermineType(type, outStream);
-	outStream << message​ << "\n\n";
+	outStream << message << "\n\n";
 
 	printf("%s", outStream.str().c_str());
 	fprintf(stderr, "%s", outStream.str().c_str());
