@@ -19,7 +19,7 @@ public:
 
 	void render(int x, int y);
 
-	void setTexture(const char * path, SDL_Rect * clip = NULL);
+	void setTexture(const char * path, SDL_Rect * clip = NULL, int w = 0, int h = 0);
 
 private:
 	bool loadTexture(const char * path);

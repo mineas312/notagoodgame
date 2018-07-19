@@ -17,7 +17,7 @@ void Texture::render(int x, int y)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 }
 
-void Texture::setTexture(const char * path, SDL_Rect * clip)
+void Texture::setTexture(const char * path, SDL_Rect * clip, int w, int h)
 {
 	loadTexture(path);
 
@@ -31,11 +31,19 @@ void Texture::setTexture(const char * path, SDL_Rect * clip)
 
 	if (clip != NULL)
 	{
+		float x = clip->x * rangePerWidthTex;
+		float y = clip->y * rangePerHeightTex;
+		float w = clip->w * rangePerWidthTex;
+		float h = clip->h * rangePerHeightTex;
+
+		float cWidth = clip->w * winptr->rangePerWidthPixel;
+		float cHeight = clip->h * winptr->rangePerHeightPixel;
+
 		vertices = new float[20]{
-			-1.0f, 1.0f, 0.0f, clip->x * rangePerWidthTex, 1.0f - clip->y * rangePerHeightTex,// tl
-			-1.0f + width, 1.0f, 0.0f, (clip->x * rangePerWidthTex) + (clip->w * rangePerWidthTex), 1.0f - clip->y * rangePerHeightTex,// tr
-			-1.0f, 1.0f - height, 0.0f, clip->x * rangePerWidthTex, 1.0f - (clip->y * rangePerHeightTex) - (clip->h * rangePerHeightTex),	// bl
-			-1.0f + width, 1.0f - height, 0.0f, (clip->x * rangePerWidthTex) + (clip->w * rangePerWidthTex), 1.0f - (clip->y * rangePerHeightTex) - (clip->h * rangePerHeightTex) // br
+			-1.0f, 1.0f, 0.0f, x, 1.0f - y,
+			-1.0f + cWidth, 1.0f, 0.0f, x + w, 1.0f - y,
+			-1.0f, 1.0f - cHeight, 0.0f, x, 1.0f - y - h,
+			-1.0f + cWidth, 1.0f - cHeight, 0.0f, x + w, 1.0f - y - h
 		};
 	}
 	else
@@ -64,7 +72,7 @@ void Texture::setTexture(const char * path, SDL_Rect * clip)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indexData, GL_STATIC_DRAW);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
-	// TODO: Tu (przy uniformie) wywala b³¹d ¿e nie ma zbindowanego shader programu. WeŸ to sprawdŸ
+	glUseProgram(shadptr->ProgID);
 	glUniform1i(glGetUniformLocation(shadptr->ProgID, "sampler"), 0);
 }
 
@@ -75,17 +83,14 @@ bool Texture::loadTexture(const char * path)
 	GLuint texID;
 
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char * data = stbi_load(path, &texWidth, &texHeight, &components, 3);
+	unsigned char * data = stbi_load(path, &texWidth, &texHeight, &components, 4);
 	if (data != NULL)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		glGenTextures(1, &texID);
 		glBindTexture(GL_TEXTURE_2D, texID);
 
-		if (components == 3)
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		else if (components == 4)
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
