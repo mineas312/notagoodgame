@@ -44,7 +44,8 @@ void Window::init()
 #else
 	glDisable(GL_MULTISAMPLE);
 #endif
-
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// Multithreaded shader compilation
 	const uint32_t maxThreads = std::thread::hardware_concurrency() != 0 ? std::thread::hardware_concurrency() : 1;
 	if (GLAD_GL_ARB_parallel_shader_compile)
