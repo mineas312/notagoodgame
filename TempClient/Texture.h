@@ -25,12 +25,12 @@ private:
 public:
 	int texWidth;
 	int texHeight;
+	GLuint vao;
+	GLuint texture;
 private:
 	GLuint indexData[6] = { 0, 1, 2, 1, 2, 3 };
-	GLuint vao;
 	GLuint vbo;
 	GLuint ibo;
-	GLuint texture;
 	float width;
 	float height;
 	float rangePerWidthTex;

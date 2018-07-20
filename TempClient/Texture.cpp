@@ -4,6 +4,10 @@
 #include "Shader.h"
 #include <stb_image.h>
 #include "Camera.h"
+#include <map>
+#include <atomic>
+
+
 
 void Texture::render(int x, int y)
 {

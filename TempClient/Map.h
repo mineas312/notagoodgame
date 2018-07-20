@@ -38,6 +38,7 @@ public:
 	int width;
 	int height;
 	int totalTiles;
+	GLuint vao;
 
 	Tile* tileSet;
 	SDL_Rect* tilesPlace;
