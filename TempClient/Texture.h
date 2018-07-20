@@ -2,10 +2,6 @@
 #include "stdafx.h"
 #include <glad/glad.h>
 #include <SDL_opengl.h>
-#define GLM_FORCE_SSE3
-#include <glm/vec3.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #define KEY_COLOR_R 0
 #define KEY_COLOR_G 0xFF

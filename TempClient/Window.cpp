@@ -37,7 +37,6 @@ void Window::init()
 		printf("Error initializing glad");
 		fprintf(stderr, "Error initializing glad");
 	}
-
 	// Multisampling
 #ifdef MSAA
 	glEnable(GL_MULTISAMPLE);
@@ -53,14 +52,14 @@ void Window::init()
 	else if (GLAD_GL_KHR_parallel_shader_compile)
 		glMaxShaderCompilerThreadsKHR(maxThreads);
 
-#ifdef _DEBUG
+#ifdef _DEBUGDISABLED
 
 	printf("OpenGL debug output is enabled\n\n");
 	fprintf(stderr, "OpenGL debug output is enabled\n\n");
 		
 	// Enable debug output
 	glEnable(GL_DEBUG_OUTPUT);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
 	// Enable all messages and test output
 	glDebugMessageCallback(oglDebugCallback, nullptr);

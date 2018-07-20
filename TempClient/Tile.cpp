@@ -26,7 +26,9 @@ void Tile::setName(TileInfo & _tileInfo)
 
 bool Tile::checkCollision(SDL_Rect & a, SDL_Rect & b)
 {
-	int leftA, leftB;
+	return (a.y + a.h) <= b.y || (b.y + b.h) <= a.y || (a.x + a.w) <= b.x || (b.x + b.w) <= a.x ? false : true;
+
+	/*int leftA, leftB;
 	int rightA, rightB;
 	int topA, topB;
 	int bottomA, bottomB;
@@ -53,5 +55,5 @@ bool Tile::checkCollision(SDL_Rect & a, SDL_Rect & b)
 	if (leftA >= rightB)
 		return false;
 
-	return true;
+	return true;*/
 }

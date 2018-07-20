@@ -35,9 +35,10 @@ private:
 	TileInfo* tileInfo;
 
 public:
-	Tile* tileSet;
-	SDL_Rect* tilesPlace;
 	int width;
 	int height;
 	int totalTiles;
+
+	Tile* tileSet;
+	SDL_Rect* tilesPlace;
 };

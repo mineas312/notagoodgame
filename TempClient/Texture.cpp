@@ -11,9 +11,9 @@ void Texture::render(int x, int y)
 
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x * winptr->rangePerWidthPixel, -y * winptr->rangePerHeightPixel, 0.0f));
 
-	model = camptr->proj * camptr->view * model;
+	glm::mat4 mvp = camptr->proj * camptr->view * model;
 
-	glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(mvp));
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -30,7 +30,7 @@ void Texture::setTexture(const char * path, SDL_Rect * clip, int w, int h)
 	rangePerWidthTex = 1.0f / texWidth;
 	rangePerHeightTex = 1.0f / texHeight;
 
-	float * vertices;
+	float * vertices = nullptr;
 
 	if (clip != NULL)
 	{

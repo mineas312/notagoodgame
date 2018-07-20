@@ -52,8 +52,8 @@ void Map::loadTiles(const char * path)
 	}
 	txt >> totalTileSetTiles;
 
-	tilesPlace = new SDL_Rect[totalTileSetTiles];
-	tileInfo = new TileInfo[totalTileSetTiles];
+	tilesPlace = new SDL_Rect[static_cast<uint64_t>(totalTileSetTiles)];
+	tileInfo = new TileInfo[static_cast<uint64_t>(totalTileSetTiles)];
 	std::string tmp;
 
 	int i = 0;
@@ -81,7 +81,7 @@ void Map::loadTiles(const char * path)
 	std::stringstream ctile;
 	ctile << path << ".png";
 
-	Texture * tiles = new Texture[totalTileSetTiles];
+	Texture * tiles = new Texture[static_cast<uint64_t>(totalTileSetTiles)];
 
 	// Dimension check
 	tiles[0].setTexture(ctile.str().c_str());
@@ -89,9 +89,9 @@ void Map::loadTiles(const char * path)
 
 	createTiles(path);
 
-	for (int i = 0; i < totalTileSetTiles; i++)
+	for (int ii = 0; ii < totalTileSetTiles; ii++)
 	{
-		tiles[i].setTexture(ctile.str().c_str(), &tilesPlace[i]);
+		tiles[ii].setTexture(ctile.str().c_str(), &tilesPlace[ii]);
 	}
 
 	mptr->mapTilesTexture = tiles;
@@ -99,7 +99,7 @@ void Map::loadTiles(const char * path)
 
 void Map::createTiles(const char * path)
 {
-	tileSet = new Tile[totalTiles];
+	tileSet = new Tile[static_cast<uint64_t>(totalTiles)];
 	int x = 0, y = 0;
 
 	std::stringstream cmap;
@@ -193,10 +193,12 @@ void Map::free()
 
 bool Map::checkCollision(const SDL_Rect & a, const SDL_Rect & b) noexcept
 {
-	int leftA, leftB;
-	int rightA, rightB;
-	int topA, topB;
-	int bottomA, bottomB;
+	return (a.y + a.h) <= b.y || (b.y + b.h) <= a.y || (a.x + a.w) <= b.x || (b.x + b.w) <= a.x ? false : true;
+
+	/*int leftA = 0, leftB = 0;
+	int rightA = 0, rightB = 0;
+	int topA = 0, topB = 0;
+	int bottomA = 0, bottomB = 0;
 
 	leftA = a.x;
 	rightA = a.x + a.w;
@@ -217,5 +219,5 @@ bool Map::checkCollision(const SDL_Rect & a, const SDL_Rect & b) noexcept
 	if (rightB <= leftA)
 		return false;
 
-	return true;
+	return true;*/
 }

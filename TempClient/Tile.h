@@ -7,8 +7,8 @@
 
 struct TileInfo
 {
-	std::string name;
 	bool canMoveThrough = false;
+	std::string name;
 };
 
 class Tile
@@ -26,7 +26,7 @@ private:
 	bool checkCollision(SDL_Rect& a, SDL_Rect& b);
 
 public:
+	int type;
 	TileInfo tileInfo;
 	SDL_Rect box;
-	int type;
 };
