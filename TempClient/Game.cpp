@@ -94,15 +94,17 @@ void renderTiles(Map &m)
 		if (checkCollision(camptr->camRect, m.tileSet[i].box))
 		{
 			std::lock_guard<std::mutex> lg(block);
-			map.insert(std::make_pair(m.tileSet[i].type, calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y)));
+			map.insert(std::pair<int, glm::mat4>(mptr->mapTilesTexture[m.tileSet[i].type].texture, calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y)));
 		}
 	}
+
 	GLuint lastTexture = -1;
 	for (auto &kv : map)
 	{
 		if (lastTexture != mptr->mapTilesTexture[kv.first].texture)
 		{
-			glBindTexture(GL_TEXTURE_2D, mptr->mapTilesTexture[m.tileSet[kv.first].type].texture);
+			glBindTexture(GL_TEXTURE_2D, kv.first);
+			lastTexture = mptr->mapTilesTexture[m.tileSet[kv.first].type].texture;
 		}
 
 		glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(kv.second));
