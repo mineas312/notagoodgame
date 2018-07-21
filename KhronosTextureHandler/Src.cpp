@@ -31,14 +31,14 @@ KTXImage::~KTXImage()
 
 KTXImage::KTXImage(const std::string & path)
 {
-	std::ifstream ktxFile(path, std::ios::binary | std::ios::ate);
+	std::ifstream ktxFile(path, std::ios::binary | std::ios::beg);
 
 	if (!ktxFile.good())
 		return;
 
 	// Read header
 	__declspec(align(16)) uint8_t* header = new uint8_t[64];
-	ktxFile.readsome(reinterpret_cast<char*>(header), 64);
+	ktxFile.read(reinterpret_cast<char*>(header), 64);
 
 	// Verify and process header
 	if (!isValid(header))
@@ -66,17 +66,17 @@ bool KTXImage::isValid(const uint8_t* startHeader)
 	const __m128i ResultBE = _mm_cmpeq_epi8(sHeader, IDP1);
 	const __m128i ResultLE = _mm_cmpeq_epi8(sHeader, IDP2);
 
-	const int maskBE = ~_mm_movemask_epi8(ResultBE);
-	const int maskLE = ~_mm_movemask_epi8(ResultLE);
+	const int maskBE = uint32_t(_mm_movemask_epi8(ResultBE));
+	const int maskLE = uint32_t(_mm_movemask_epi8(ResultLE));
 
-	if (maskBE == 0)
-	{
-		endianness = BIG_ENDIAN;
-		return true;
-	}
-	else if (maskLE == 0)
+	if (maskBE == 0x0000FFFF)
 	{
 		endianness = LITTLE_ENDIAN;
+		return true;
+	}
+	else if (maskLE == 0x0000FFFF)
+	{
+		endianness = BIG_ENDIAN;
 		return true;
 	}
 	else
@@ -89,18 +89,18 @@ void KTXImage::processHeader(const uint8_t * headerData)
 {
 	if (endianness == LITTLE_ENDIAN)
 	{
-		std::memcpy(&glType, reinterpret_cast<void*>(headerData[16]), 4);
-		std::memcpy(&glTypeSize, reinterpret_cast<void*>(headerData[20]), 4);
-		std::memcpy(&glFormat, reinterpret_cast<void*>(headerData[24]), 4); 
-		std::memcpy(&glInternalFormat, reinterpret_cast<void*>(headerData[28]), 4);
-		std::memcpy(&glBaseInternalFormat, reinterpret_cast<void*>(headerData[32]), 4);
-		std::memcpy(&pixelWidth, reinterpret_cast<void*>(headerData[36]), 4);
-		std::memcpy(&pixelHeight, reinterpret_cast<void*>(headerData[40]), 4);
-		std::memcpy(&pixelDepth, reinterpret_cast<void*>(headerData[44]), 4); 
-		std::memcpy(&nArrayElements, reinterpret_cast<void*>(headerData[48]), 4);
-		std::memcpy(&nFaces, reinterpret_cast<void*>(headerData[52]), 4);
-		std::memcpy(&nMips, reinterpret_cast<void*>(headerData[56]), 4);
-		std::memcpy(&nKeyValueDataBytes, reinterpret_cast<void*>(headerData[60]), 4);
+		std::memcpy(&glType, reinterpret_cast<const void*>((headerData + 16)), 4);
+		std::memcpy(&glTypeSize, reinterpret_cast<const void*>(headerData + 20), 4);
+		std::memcpy(&glFormat, reinterpret_cast<const void*>(headerData + 24), 4);
+		std::memcpy(&glInternalFormat, reinterpret_cast<const void*>(headerData + 28), 4);
+		std::memcpy(&glBaseInternalFormat, reinterpret_cast<const void*>(headerData + 32), 4);
+		std::memcpy(&pixelWidth, reinterpret_cast<const void*>(headerData + 36), 4);
+		std::memcpy(&pixelHeight, reinterpret_cast<const void*>(headerData + 40), 4);
+		std::memcpy(&pixelDepth, reinterpret_cast<const void*>(headerData + 44), 4);
+		std::memcpy(&nArrayElements, reinterpret_cast<const void*>(headerData + 48), 4);
+		std::memcpy(&nFaces, reinterpret_cast<const void*>(headerData + 52), 4);
+		std::memcpy(&nMips, reinterpret_cast<const void*>(headerData + 56), 4);
+		std::memcpy(&nKeyValueDataBytes, reinterpret_cast<const void*>(headerData + 60), 4);
 
 		internalFormat = glInternalFormat;
 		baseFormat = glBaseInternalFormat;
@@ -111,31 +111,31 @@ void KTXImage::processHeader(const uint8_t * headerData)
 	}
 	else
 	{
-		std::memcpy(&glType, reinterpret_cast<void*>(headerData[16]), 4);
-		std::memcpy(&glTypeSize, reinterpret_cast<void*>(headerData[20]), 4);
-		std::memcpy(&glFormat, reinterpret_cast<void*>(headerData[24]), 4);
-		std::memcpy(&glInternalFormat, reinterpret_cast<void*>(headerData[28]), 4); 
-		std::memcpy(&glBaseInternalFormat, reinterpret_cast<void*>(headerData[32]), 4); 
-		std::memcpy(&pixelWidth, reinterpret_cast<void*>(headerData[36]), 4); 
-		std::memcpy(&pixelHeight, reinterpret_cast<void*>(headerData[40]), 4);
-		std::memcpy(&pixelDepth, reinterpret_cast<void*>(headerData[44]), 4); 
-		std::memcpy(&nArrayElements, reinterpret_cast<void*>(headerData[48]), 4);
-		std::memcpy(&nFaces, reinterpret_cast<void*>(headerData[52]), 4);
-		std::memcpy(&nMips, reinterpret_cast<void*>(headerData[56]), 4);
-		std::memcpy(&nKeyValueDataBytes, reinterpret_cast<void*>(headerData[60]), 4);
+		std::memcpy(&glType, reinterpret_cast<const void*>((headerData + 16)), 4);
+		std::memcpy(&glTypeSize, reinterpret_cast<const void*>(headerData + 20), 4);
+		std::memcpy(&glFormat, reinterpret_cast<const void*>(headerData + 24), 4);
+		std::memcpy(&glInternalFormat, reinterpret_cast<const void*>(headerData + 28), 4);
+		std::memcpy(&glBaseInternalFormat, reinterpret_cast<const void*>(headerData + 32), 4);
+		std::memcpy(&pixelWidth, reinterpret_cast<const void*>(headerData + 36), 4);
+		std::memcpy(&pixelHeight, reinterpret_cast<const void*>(headerData + 40), 4);
+		std::memcpy(&pixelDepth, reinterpret_cast<const void*>(headerData + 44), 4);
+		std::memcpy(&nArrayElements, reinterpret_cast<const void*>(headerData + 48), 4);
+		std::memcpy(&nFaces, reinterpret_cast<const void*>(headerData + 52), 4);
+		std::memcpy(&nMips, reinterpret_cast<const void*>(headerData + 56), 4);
+		std::memcpy(&nKeyValueDataBytes, reinterpret_cast<const void*>(headerData + 60), 4);
 
-		_SwapBytes32bit(glType);
-		_SwapBytes32bit(glTypeSize);
-		_SwapBytes32bit(glFormat);
-		_SwapBytes32bit(glInternalFormat);
-		_SwapBytes32bit(glBaseInternalFormat);
-		_SwapBytes32bit(pixelWidth);
-		_SwapBytes32bit(pixelHeight);
-		_SwapBytes32bit(pixelDepth);
-		_SwapBytes32bit(nArrayElements);
-		_SwapBytes32bit(nFaces);
-		_SwapBytes32bit(nMips);
-		_SwapBytes32bit(nKeyValueDataBytes);
+		glType = _SwapBytes32bit(glType);
+		glTypeSize = _SwapBytes32bit(glTypeSize);
+		glFormat = _SwapBytes32bit(glFormat);
+		glInternalFormat = _SwapBytes32bit(glInternalFormat);
+		glBaseInternalFormat = _SwapBytes32bit(glBaseInternalFormat);
+		pixelWidth = _SwapBytes32bit(pixelWidth);
+		pixelHeight = _SwapBytes32bit(pixelHeight);
+		pixelDepth = _SwapBytes32bit(pixelDepth);
+		nArrayElements = _SwapBytes32bit(nArrayElements);
+		nFaces = _SwapBytes32bit(nFaces);
+		nMips = _SwapBytes32bit(nMips);
+		nKeyValueDataBytes = _SwapBytes32bit(nKeyValueDataBytes);
 
 		internalFormat = glInternalFormat;
 		baseFormat = glBaseInternalFormat;
@@ -144,5 +144,4 @@ void KTXImage::processHeader(const uint8_t * headerData)
 		depth = pixelDepth;
 		mips = nMips;
 	}
-	
 }

@@ -329,3 +329,5 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 /TempClient.db3
+/include/internal/KTXImage.hpp
+/lib64/KhronosTextureHandler.lib

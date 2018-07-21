@@ -6,6 +6,7 @@ class KTXImage
 {
 public:
 	~KTXImage();
+	KTXImage();
 
 	KTXImage(const std::string& path);
 
@@ -20,7 +21,6 @@ public:
 	uint8_t channels = 4;
 
 private:
-	KTXImage();
 	bool isValid(const uint8_t* startHeader);
 
 	void processHeader(const uint8_t* headerData);
