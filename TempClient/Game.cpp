@@ -83,28 +83,25 @@ Game* gptr;
 
 void renderTiles(Map &m)
 {
-	glBindVertexArray(mptr->mapTilesTexture->vao);
+	glBindTexture(GL_TEXTURE_2D, mptr->mapTilesTexture->texture);
 
 	std::multimap<int, glm::mat4> map;
-
-	std::mutex block;
 
 	for (int i = 0; i < m.totalTiles; i++)
 	{
 		if (checkCollision(camptr->camRect, m.tileSet[i].box))
 		{
-			std::lock_guard<std::mutex> lg(block);
-			map.insert(std::pair<int, glm::mat4>(mptr->mapTilesTexture[m.tileSet[i].type].texture, calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y)));
+			map.insert(std::pair<int, glm::mat4>(mptr->mapTilesTexture[m.tileSet[i].type].vao, calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y)));
 		}
 	}
 
-	GLuint lastTexture = -1;
+	GLuint lastVAO = -1;
 	for (auto &kv : map)
 	{
-		if (lastTexture != mptr->mapTilesTexture[kv.first].texture)
+		if (lastVAO != mptr->mapTilesTexture[kv.first].vao)
 		{
-			glBindTexture(GL_TEXTURE_2D, kv.first);
-			lastTexture = mptr->mapTilesTexture[m.tileSet[kv.first].type].texture;
+			glBindVertexArray(kv.first);
+			lastVAO = mptr->mapTilesTexture[m.tileSet[kv.first].type].vao;
 		}
 
 		glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(kv.second));

@@ -79,7 +79,11 @@ void Map::loadTiles(const char * path)
 	}
 
 	std::stringstream ctile;
+#ifdef USE_FORMAT_PNG
 	ctile << path << ".png";
+#else
+	ctile << path << ".KTX";
+#endif
 
 	Texture * tiles = new Texture[static_cast<uint64_t>(totalTileSetTiles)];
 

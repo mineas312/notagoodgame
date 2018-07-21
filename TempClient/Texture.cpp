@@ -7,7 +7,8 @@
 #include <map>
 #include <atomic>
 
-
+#include <gli/image.hpp>
+#include <gli/load_ktx.hpp>
 
 void Texture::render(int x, int y)
 {
@@ -89,27 +90,43 @@ bool Texture::loadTexture(const char * path)
 	int components;
 	GLuint texID;
 
+#ifdef USE_FORMAT_PNG
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char * data = stbi_load(path, &texWidth, &texHeight, &components, 4);
-	if (data != NULL)
-	{
-		glActiveTexture(GL_TEXTURE0);
-		glGenTextures(1, &texID);
-		glBindTexture(GL_TEXTURE_2D, texID);
+	unsigned char * img = stbi_load(path, &texWidth, &texHeight, &components, 4);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	if (img == NULL)
+		return false;
+#else
+	gli::texture img = gli::load_ktx(path);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	texWidth = img.extent().x;
+	texHeight = img.extent().y;
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		delete[] data;
-		texture = texID;
-		return true;
-	}
-	return false;
+	if (img.data() == NULL)
+		return false;
+#endif
+
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_2D, texID);
+
+#ifdef USE_FORMAT_PNG
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+#else 
+	glCompressedTexImage2D(GL_TEXTURE_2D, img.base_level(), GL_COMPRESSED_RGBA_BPTC_UNORM, img.extent().x, img.extent().y, 0, img.size(), img.data());
+	printf("%d", glGetError());
+#endif
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+#ifdef USE_FORMAT_PNG
+	delete[] img;
+#endif
+	texture = texID;
 }
 
 void Texture::free()
