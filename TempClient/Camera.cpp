@@ -2,7 +2,7 @@
 #include "Camera.h"
 
 
-Camera::Camera()
+Camera::Camera() : proj { glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f) }
 {
 }
 
@@ -16,8 +16,6 @@ void Camera::init()
 	cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
 	cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 	cameraDirection = glm::vec3(0.0f, 1.0f, 0.0f);
-	proj = glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f);
-	//proj = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f); // For testing culling distance in full view
 	view = glm::lookAt(cameraPos, cameraTarget, cameraDirection);
 	GLint cw[4];
 	glGetIntegerv(GL_VIEWPORT, cw);
@@ -27,7 +25,7 @@ void Camera::init()
 	camRect.h = cw[3] / 2;
 }
 
-void Camera::center(int x, int y, Map &m) noexcept
+void Camera::center(const int x, const int y, Map &m) noexcept
 {
 	cameraPos.x = x * (winptr->rangePerWidthPixel);
 	cameraPos.y = -y * (winptr->rangePerHeightPixel);
@@ -38,10 +36,10 @@ void Camera::center(int x, int y, Map &m) noexcept
 	camRect.x = static_cast<int>((cameraPos.x / winptr->rangePerWidthPixel) + (winptr->VIEW_WIDTH));
 	camRect.y = static_cast<int>((-cameraPos.y / winptr->rangePerHeightPixel) + (winptr->VIEW_HEIGHT));
 
-	if (cameraPos.x < 0)
-		cameraPos.x = 0;
-	if (cameraPos.y < 0)
-		cameraPos.y = 0;
+	if (cameraPos.x < 0.0f)
+		cameraPos.x = 0.0f;
+	if (cameraPos.y < 0.0f)
+		cameraPos.y = 0.0f;
 }
 
 Camera * camptr;

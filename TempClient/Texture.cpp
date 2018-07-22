@@ -2,10 +2,8 @@
 #include "Window.h"
 #include "Texture.h"
 #include "Shader.h"
-#include <stb_image.h>
+#include "Common.h"
 #include "Camera.h"
-#include <map>
-#include <atomic>
 
 #include <gli/image.hpp>
 #include <gli/load_ktx.hpp>
@@ -14,7 +12,7 @@ void Texture::render(int x, int y)
 {
 	glBindVertexArray(vao);
 
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x * winptr->rangePerWidthPixel, -y * winptr->rangePerHeightPixel, 0.0f));
+	glm::mat4 model = glm::translate(identityMatrix, glm::vec3(x * winptr->rangePerWidthPixel, -y * winptr->rangePerHeightPixel, 0.0f));
 
 	glm::mat4 mvp = camptr->proj * camptr->view * model;
 

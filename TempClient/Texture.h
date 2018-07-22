@@ -1,7 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include <glad/glad.h>
-#include <SDL_opengl.h>
 
 #define KEY_COLOR_R 0
 #define KEY_COLOR_G 0xFF
@@ -28,7 +26,7 @@ public:
 	GLuint vao;
 	GLuint texture;
 private:
-	GLuint indexData[6] = { 0, 1, 2, 1, 2, 3 };
+	const GLuint indexData[6] = { 0, 1, 2, 1, 2, 3 };
 	GLuint vbo;
 	GLuint ibo;
 	float width;

@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <thread>
 #include <mutex>
+#include <atomic>
+#include <map>
 
 #include <SDL.h>
 #include <glad/glad.h>
@@ -20,6 +22,8 @@
 #include <SDL_image.h>
 #include <SDL_net.h>
 #include <SDL_ttf.h>
+
+#include <stb_image.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #define GLM_FORCE_SSE3

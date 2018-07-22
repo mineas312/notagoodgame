@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Map.h"
+#include "Common.h"
 
 // -Call it without extension
 //   +The files are needed to run map:
@@ -193,35 +194,4 @@ void Map::free()
 		delete[] tileInfo;
 		tileInfo = NULL;
 	}
-}
-
-bool Map::checkCollision(const SDL_Rect & a, const SDL_Rect & b) noexcept
-{
-	return (a.y + a.h) <= b.y || (b.y + b.h) <= a.y || (a.x + a.w) <= b.x || (b.x + b.w) <= a.x ? false : true;
-
-	/*int leftA = 0, leftB = 0;
-	int rightA = 0, rightB = 0;
-	int topA = 0, topB = 0;
-	int bottomA = 0, bottomB = 0;
-
-	leftA = a.x;
-	rightA = a.x + a.w;
-	leftB = b.x;
-	rightB = b.x + b.w;
-
-	topA = a.y;
-	bottomA = a.y + a.h;
-	topB = b.y;
-	bottomB = b.y + b.h;
-
-	if (bottomA <= topB)
-		return false;
-	if (bottomB <= topA)
-		return false;
-	if (rightA <= leftB)
-		return false;
-	if (rightB <= leftA)
-		return false;
-
-	return true;*/
 }

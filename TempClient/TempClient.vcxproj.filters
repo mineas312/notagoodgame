@@ -84,6 +84,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Game Components\Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h">
@@ -127,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Game Components\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

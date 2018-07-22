@@ -2,10 +2,6 @@
 #include "Window.h"
 #include "Event.h"
 
-glm::mat4 calcMVP(int x, int y);
-
-bool checkCollision(const SDL_Rect& a, const SDL_Rect& b) noexcept;
-
 void renderTiles(Map &m);
 
 class Game

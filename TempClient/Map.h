@@ -27,8 +27,6 @@ private:
 
 	void free();
 
-	bool checkCollision(const SDL_Rect& a, const SDL_Rect& b) noexcept;
-
 private:
 	int tilesFileWidth;
 	int totalTileSetTiles;

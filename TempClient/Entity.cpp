@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Entity.h"
+#include "Common.h"
 
 void Entity::del() noexcept
 {
@@ -17,11 +18,11 @@ void Entity::setEntity(char * _name, const int xPos, const int yPos) noexcept
 
 void Entity::move(Map & map, const double fps)
 {
-	if (fps == 0.0)
+	if (isEqf(fps, 0.0, 3))	// floating point equality comparisons require use of the hardware epsilon
 		return;
-
+	
 	// Dnia 14.07.2018 g³ówny programista nie wiedzia³ jak uniezale¿niæ prêdkoœæ ruchu od FPSów
-	double tmpX = (rxSpeed + xSpeed / fps); // By³o (rxSpeed + xSpeed) / fps XDDDD
+	double tmpX = (rxSpeed + xSpeed / fps);
 	rxSpeed = std::modf(tmpX, &tmpX);
 
 	double tmpY = (rySpeed + ySpeed / fps);

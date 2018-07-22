@@ -2,7 +2,7 @@
 #include "Shader.h"
 #include "Game.h"
 #include "Camera.h"
-#include <map>
+#include "Common.h"
 
 Game::Game() noexcept
 {
@@ -85,13 +85,13 @@ void renderTiles(Map &m)
 {
 	glBindTexture(GL_TEXTURE_2D, mptr->mapTilesTexture->texture);
 
-	std::multimap<int, glm::mat4> map;
+	std::multimap<GLuint, glm::mat4> map;
 
 	for (int i = 0; i < m.totalTiles; i++)
 	{
 		if (checkCollision(camptr->camRect, m.tileSet[i].box))
 		{
-			map.insert(std::pair<int, glm::mat4>(mptr->mapTilesTexture[m.tileSet[i].type].vao, calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y)));
+			map.insert(std::pair<GLuint, glm::mat4>(mptr->mapTilesTexture[m.tileSet[i].type].vao, calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y)));
 		}
 	}
 
@@ -109,19 +109,4 @@ void renderTiles(Map &m)
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 	}
 
-
-}
-
-bool checkCollision(const SDL_Rect & a, const SDL_Rect & b) noexcept
-{
-	return (a.y + a.h) <= b.y || (b.y + b.h) <= a.y || (a.x + a.w) <= b.x || (b.x + b.w) <= a.x ? false : true;
-}
-
-glm::mat4 calcMVP(int x, int y)
-{
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x * winptr->rangePerWidthPixel, -y * winptr->rangePerHeightPixel, 0.0f));
-
-	glm::mat4 mvp = camptr->proj * camptr->view * model;
-
-	return mvp;
 }

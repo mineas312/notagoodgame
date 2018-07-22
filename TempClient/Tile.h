@@ -22,8 +22,6 @@ public:
 
 	void setName(TileInfo& _tileInfo);
 
-private:
-	bool checkCollision(SDL_Rect& a, SDL_Rect& b);
 
 public:
 	int type;
