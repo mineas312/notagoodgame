@@ -250,6 +250,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="ThreadSafe.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

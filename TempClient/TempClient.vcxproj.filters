@@ -31,6 +31,9 @@
     <Filter Include="Debugging">
       <UniqueIdentifier>{37a09e84-0c04-40ea-8b9a-1ddd0b046e8a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Support">
+      <UniqueIdentifier>{7052e686-ede7-4b1f-81c1-6db3d0d6f96f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -85,7 +88,7 @@
       <Filter>Game Components\Sources</Filter>
     </ClCompile>
     <ClCompile Include="Common.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Support</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,7 +135,10 @@
       <Filter>Game Components\Headers</Filter>
     </ClInclude>
     <ClInclude Include="Common.h">
-      <Filter>Source Files</Filter>
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSafe.h">
+      <Filter>Support</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

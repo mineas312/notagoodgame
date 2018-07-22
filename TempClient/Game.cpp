@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Camera.h"
 #include "Common.h"
+#include "ThreadSafe.h"
 
 Game::Game() noexcept
 {
@@ -18,6 +19,8 @@ Game::Game() noexcept
 
 void Game::init()
 {
+	ThreadSafe::vector<size_t> a;
+
 	winptr->init();
 	shadptr->InitShader("res/shaders/vs.txt", "res/shaders/fs.txt");
 	mptr->loadMedia();
@@ -85,17 +88,43 @@ void renderTiles(Map &m)
 {
 	glBindTexture(GL_TEXTURE_2D, mptr->mapTilesTexture->texture);
 
-	std::multimap<GLuint, glm::mat4> map;
-
+	//std::multimap<GLuint, glm::mat4> map;
+	std::map<GLuint, std::vector<glm::mat4>> uniqueMap;
+	
 	for (int i = 0; i < m.totalTiles; i++)
 	{
-		if (checkCollision(camptr->camRect, m.tileSet[i].box))
+		/*if (checkCollision(camptr->camRect, m.tileSet[i].box))
 		{
 			map.insert(std::pair<GLuint, glm::mat4>(mptr->mapTilesTexture[m.tileSet[i].type].vao, calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y)));
+		}*/
+
+		if (uniqueMap.find(i) == uniqueMap.end())
+		{
+			if (checkCollision(camptr->camRect, m.tileSet[i].box))
+			{
+				uniqueMap.emplace(std::make_pair(mptr->mapTilesTexture[m.tileSet[i].type].vao, std::vector<glm::mat4>()));
+				uniqueMap.at(mptr->mapTilesTexture[m.tileSet[i].type].vao).push_back(calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y));
+			}
+		}
+		else
+		{
+			if (checkCollision(camptr->camRect, m.tileSet[i].box))
+			{
+				uniqueMap.at(mptr->mapTilesTexture[m.tileSet[i].type].vao).push_back(calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y));
+			}
 		}
 	}
 
-	GLuint lastVAO = -1;
+	for (auto& kv : uniqueMap)
+	{
+		glBindVertexArray(kv.first);
+
+		glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), kv.second.size(), GL_FALSE, (const float*)kv.second.data());
+
+		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL, kv.second.size());
+	}
+
+	/*GLuint lastVAO = -1;
 	for (auto &kv : map)
 	{
 		if (lastVAO != mptr->mapTilesTexture[kv.first].vao)
@@ -107,6 +136,6 @@ void renderTiles(Map &m)
 		glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(kv.second));
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-	}
+	}*/
 
 }
