@@ -52,16 +52,12 @@ public:
 		type = _type;
 		tileInfo = _tileInfo;
 	}
-	bool check_collision(SDL_Rect &a, SDL_Rect &b)
-	{
-		return (a.y + a.h) <= b.y || (b.y + b.h) <= a.y || (a.x + a.w) <= b.x || (b.x + b.w) <= a.x ? false : true;
-	}
 	void render(SDL_Rect* clip = NULL)
 	{
 		if(clip == NULL)
-			g_TileSetTiles.render(box.x, box.y);
+			g_TileSetTiles.render(box.x - wptr->camera.x, box.y - wptr->camera.y);
 		else
-			g_TileSetTiles.render(box.x, box.y, clip);
+			g_TileSetTiles.render(box.x - wptr->camera.x, box.y - wptr->camera.y, clip);
 	}
 public:
 	SDL_Rect box;
@@ -78,6 +74,9 @@ public:
 		height = 0;
 		totalTiles = 0;
 		totalTileSetTiles = 0;
+		tilesPlace = NULL;
+		tileInfo = NULL;
+		tileSet = NULL;
 	}
 	~Map()
 	{
@@ -85,7 +84,7 @@ public:
 	}
 	void setMap(std::string path, int _width, int _height)
 	{
-		// TODO free
+		free();
 
 		width = _width;
 		height = _height;
@@ -93,6 +92,7 @@ public:
 
 		loadTiles(path);
 	}
+private:
 	void loadTiles(std::string path)
 	{
 		std::stringstream ctxt;
@@ -205,7 +205,16 @@ public:
 			tilesPlace[i].h = TILE_HEIGHT;
 		}
 	}
-private:
+	void free()
+	{
+		delete[] tilesPlace;
+		tilesPlace = NULL;
+		delete[] tileInfo;
+		tileInfo = NULL;
+		delete[] tileSet;
+		tileSet = NULL;
+	}
+public:
 	int width;
 	int height;
 	int totalTiles;

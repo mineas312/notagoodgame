@@ -6,6 +6,10 @@
 
 TTF_Font * font;
 SDL_Renderer * g_renderer;
+bool check_collision(SDL_Rect &a, SDL_Rect &b)
+{
+	return (a.y + a.h) <= b.y || (b.y + b.h) <= a.y || (a.x + a.w) <= b.x || (b.x + b.w) <= a.x ? false : true;
+}
 
 class Texture
 {
@@ -105,17 +109,18 @@ public:
 class Window
 {
 public:
-	Window()
+	Window(int width, int height)
 	{
 		window = NULL;
 		screen = NULL;
-		SCREEN_WIDTH = 640;
-		SCREEN_HEIGHT = 480;
-		currentType = 0;
-		tiles = NULL;
-		tileSheet = NULL;
+		SCREEN_WIDTH = width;
+		SCREEN_HEIGHT = height;
 		camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 		quit = false;
+		xSpeed = 3;
+		ySpeed = 3;
+		rxSpeed = 0.0f;
+		rySpeed = 0.0f;
 	}
 	bool init()
 	{
@@ -124,26 +129,25 @@ public:
 		{
 			return false;
 		}
-		window = SDL_CreateWindow("Level Designer. Current Tile: Red Tile", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		window = SDL_CreateWindow("Level Designer. Current Tile ID: 0", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (window == NULL)
 		{
 			return false;
 		}
-		g_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		g_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		if (g_renderer == NULL)
 		{
 			printf("Cannot create renderer");
 			return false;
 		}
 
-		m.setMap(1280, 960);
-
-		tiles = new Tile[m.getTotalTiles()];
-		//If everything initialized fine
 		return true;
 	}
-	void set_camera(int mapWidth, int mapHeight)
+	void set_camera(int mapWidth, int mapHeight, Uint32 fps)
 	{
+		if (fps == 0)
+			return;
+
 		//Mouse offsets
 		int x = 0, y = 0;
 
@@ -153,25 +157,25 @@ public:
 		//Move camera to the left if needed
 		if (x < TILE_WIDTH)
 		{
-			camera.x -= 20;
+			camera.x -= 800 / fps;
 		}
 
 		//Move camera to the right if needed
 		if (x > SCREEN_WIDTH - TILE_WIDTH)
 		{
-			camera.x += 20;
+			camera.x += 800 / fps;
 		}
 
 		//Move camera up if needed
 		if (y < TILE_WIDTH)
 		{
-			camera.y -= 20;
+			camera.y -= 800 / fps;
 		}
 
 		//Move camera down if needed
 		if (y > SCREEN_HEIGHT - TILE_WIDTH)
 		{
-			camera.y += 20;
+			camera.y += 800 / fps;
 		}
 
 		//Keep the camera in bounds.
@@ -192,30 +196,19 @@ public:
 			camera.y = mapHeight - camera.h;
 		}
 	}
-	void save_tiles()
-	{
-		//Open the map
-		std::ofstream map("lazy.map");
-
-		//Go through the tiles
-		for (int t = 0; t < m.getTotalTiles(); t++)
-		{
-			//Write tile type to file
-			map << tiles[t].get_type() << " ";
-		}
-
-		//Close the file
-		map.close();
-	}
 private:
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
-	SDL_Window * window;
 	SDL_Surface * screen;
 	bool quit;
+	int xSpeed;
+	int ySpeed;
+	float rxSpeed;
+	float rySpeed;
 public:
 	SDL_Event e;
 	SDL_Rect camera;
+	SDL_Window * window;
 };
 
 Window * wptr;
