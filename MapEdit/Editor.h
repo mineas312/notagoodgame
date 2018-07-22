@@ -1,5 +1,6 @@
 #pragma once
 #include "Map.h"
+#include "GUI.h"
 
 class Editor
 {
@@ -9,6 +10,7 @@ public:
 		wptr = new Window(screen_width, screen_height);
 		quit = false;
 		currentType = 0;
+		gptr = new GUI();
 	}
 	// -Call witout extension; needs .txt .map .png
 	void init(std::string map, int mapWidth, int mapHeight)
@@ -19,6 +21,7 @@ public:
 		}
 		m.setMap(map, mapWidth, mapHeight);
 		mapFile = map;
+		gptr->init(m);
 	}
 	void loop()
 	{
@@ -73,6 +76,8 @@ public:
 	}
 	void render()
 	{
+		SDL_SetRenderDrawColor(g_renderer, 0, 0, 128, 255);
+		SDL_RenderClear(g_renderer);
 
 		wptr->set_camera(m.width, m.height, currentFPS);
 
@@ -81,6 +86,8 @@ public:
 			if (check_collision(wptr->camera, m.tileSet[i].box))
 				m.tileSet[i].render(&m.tilesPlace[m.tileSet[i].type]);
 		}
+
+		gptr->renderGUI(m, currentType);
 
 		SDL_RenderPresent(g_renderer);
 	}
