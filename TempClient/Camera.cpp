@@ -31,15 +31,36 @@ void Camera::center(const int x, const int y, Map &m) noexcept
 	cameraPos.y = -y * (winptr->rangePerHeightPixel);
 	cameraTarget.x = x * (winptr->rangePerWidthPixel);
 	cameraTarget.y = -y * (winptr->rangePerHeightPixel);
-	view = glm::lookAt(cameraPos, cameraTarget, cameraDirection);
 
 	camRect.x = static_cast<int>((cameraPos.x / winptr->rangePerWidthPixel) + (winptr->VIEW_WIDTH));
 	camRect.y = static_cast<int>((-cameraPos.y / winptr->rangePerHeightPixel) + (winptr->VIEW_HEIGHT));
 
-	if (cameraPos.x < 0.0f)
-		cameraPos.x = 0.0f;
-	if (cameraPos.y < 0.0f)
-		cameraPos.y = 0.0f;
+	if (cameraPos.x < 0.0f - winptr->VIEW_WIDTH * winptr->rangePerWidthPixel)
+	{
+		cameraPos.x = 0.0f - winptr->VIEW_WIDTH * winptr->rangePerWidthPixel;
+		cameraTarget.x = 0.0f - winptr->VIEW_WIDTH * winptr->rangePerWidthPixel;
+		camRect.x = 0;
+	}
+	else if (cameraPos.x / winptr->rangePerWidthPixel > m.width - winptr->VIEW_WIDTH*3)
+	{
+		cameraPos.x = (m.width - winptr->VIEW_WIDTH * 3) * winptr->rangePerWidthPixel;
+		cameraTarget.x = (m.width - winptr->VIEW_WIDTH * 3) * winptr->rangePerWidthPixel;
+		camRect.x = m.width - winptr->VIEW_WIDTH * 2;
+	}
+	if (cameraPos.y > 1.0f - winptr->VIEW_HEIGHT * winptr->rangePerHeightPixel)
+	{
+		cameraPos.y = 1.0f - winptr->VIEW_HEIGHT * winptr->rangePerHeightPixel;
+		cameraTarget.y = 1.0f - winptr->VIEW_HEIGHT * winptr->rangePerHeightPixel;
+		camRect.y = 0;
+	}
+	else if (-cameraPos.y / winptr->rangePerHeightPixel > m.height - winptr->VIEW_HEIGHT * 3)
+	{
+		cameraPos.y = -(m.height - winptr->VIEW_HEIGHT * 3) * winptr->rangePerHeightPixel;
+		cameraTarget.y = -(m.height - winptr->VIEW_HEIGHT * 3) * winptr->rangePerHeightPixel;
+		camRect.y = m.height - winptr->VIEW_HEIGHT * 2;
+	}
+
+	view = glm::lookAt(cameraPos, cameraTarget, cameraDirection);
 }
 
 Camera * camptr;

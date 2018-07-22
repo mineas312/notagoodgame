@@ -1,8 +1,0 @@
-#version 460 core
-layout(location = 0) in vec3 vec2Dpos;
-layout(location = 1) in vec2 texcoord;
-out vec2 Texcoord; uniform mat4 model;
-void main() {
-	gl_Position = model*vec4( vec2Dpos.x, vec2Dpos.y, 0, 1 );
-	Texcoord = texcoord;
-}
