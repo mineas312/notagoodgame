@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Common.h"
 #include "Camera.h"
+#include "Game.h"
 
 #include <gli/image.hpp>
 #include <gli/load_ktx.hpp>
@@ -11,14 +12,15 @@
 void Texture::render(int x, int y)
 {
 	glBindVertexArray(vao);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glm::mat4 model = glm::translate(identityMatrix, glm::vec3(x * winptr->rangePerWidthPixel, -y * winptr->rangePerHeightPixel, 0.0f));
 
 	glm::mat4 mvp = camptr->proj * camptr->view * model;
 
-	glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(mvp));
-
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, glm::value_ptr(mvp));
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 }

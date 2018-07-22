@@ -31,6 +31,10 @@ void Game::init()
 
 	charptr->setCharacter((char*)"Janusz", 0, 0);
 	glClearColor(0.0, 0.0, 0.5, 1.0);
+
+	glGenBuffers(1, &ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
+	glBufferData(GL_UNIFORM_BUFFER, 256 * 4 * 4 * 4, NULL, GL_STREAM_DRAW);
 }
 
 void Game::loop()
@@ -88,16 +92,10 @@ void renderTiles(Map &m)
 {
 	glBindTexture(GL_TEXTURE_2D, mptr->mapTilesTexture->texture);
 
-	//std::multimap<GLuint, glm::mat4> map;
-	std::map<GLuint, std::vector<glm::mat4>> uniqueMap;
+	__declspec(align(16)) std::map<GLuint, std::vector<glm::mat4>> uniqueMap;
 	
 	for (int i = 0; i < m.totalTiles; i++)
 	{
-		/*if (checkCollision(camptr->camRect, m.tileSet[i].box))
-		{
-			map.insert(std::pair<GLuint, glm::mat4>(mptr->mapTilesTexture[m.tileSet[i].type].vao, calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y)));
-		}*/
-
 		if (uniqueMap.find(i) == uniqueMap.end())
 		{
 			if (checkCollision(camptr->camRect, m.tileSet[i].box))
@@ -115,27 +113,15 @@ void renderTiles(Map &m)
 		}
 	}
 
+	glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
+
 	for (auto& kv : uniqueMap)
 	{
 		glBindVertexArray(kv.first);
 
-		glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), kv.second.size(), GL_FALSE, (const float*)kv.second.data());
-
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, kv.second.size() * 64, kv.second.data());
+		
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL, kv.second.size());
 	}
-
-	/*GLuint lastVAO = -1;
-	for (auto &kv : map)
-	{
-		if (lastVAO != mptr->mapTilesTexture[kv.first].vao)
-		{
-			glBindVertexArray(kv.first);
-			lastVAO = mptr->mapTilesTexture[m.tileSet[kv.first].type].vao;
-		}
-
-		glUniformMatrix4fv(glGetUniformLocation(shadptr->ProgID, "model"), 1, GL_FALSE, glm::value_ptr(kv.second));
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-	}*/
-
 }

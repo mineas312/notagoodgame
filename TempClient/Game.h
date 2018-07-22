@@ -21,6 +21,9 @@ private:
 
 	void update();
 
+public:
+	GLuint ubo;
+
 private:
 
 	double currentFPS = 0.0;
@@ -29,6 +32,8 @@ private:
 
 	//TODO Create component for maps
 	Map map;
+
+
 };
 
 extern Game* gptr;

@@ -1,7 +1,11 @@
 #version 460 core
-out vec4 color;
+
 in vec2 Texcoord;
+
+out vec4 color;
+
 uniform sampler2D sampler;
+
 void main() {
-	color = texture(sampler, Texcoord).rgba;
+	color = texture(sampler, Texcoord);
 }
