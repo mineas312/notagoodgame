@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "Camera.h"
 #include "Common.h"
-#include "ThreadSafe.h"
 
 Game::Game() noexcept
 {
@@ -19,13 +18,10 @@ Game::Game() noexcept
 
 void Game::init()
 {
-	ThreadSafe::vector<size_t> a;
-
 	winptr->init();
-	shadptr->InitShader("res/shaders/vs.txt", "res/shaders/fs.txt");
+	shadptr->InitShader("res/shaders/tiles.vert", "res/shaders/tiles.frag");
 	mptr->loadMedia();
 	camptr->init();
-
 	//Map loading
 	map.setMap(5120, 3840, "res/lazy");
 
@@ -41,8 +37,6 @@ void Game::loop()
 {
 	Uint64 startClock = SDL_GetPerformanceCounter();
 	Uint64 lastClock = 0;
-
-	glUseProgram(shadptr->ProgID);
 
 	while (!quit)
 	{
@@ -71,11 +65,13 @@ void Game::render() noexcept
 
 	camptr->center(charptr->entity.box.x - winptr->SCREEN_WIDTH/2, charptr->entity.box.y - winptr->SCREEN_HEIGHT/2, map);
 
+	glUseProgram(shadptr->ProgID);
 	renderTiles(map);
 
 	mptr->charTexture.render(charptr->entity.box.x, charptr->entity.box.y);
 
 	SDL_GL_SwapWindow(winptr->window);
+
 }
 
 void Game::update()
@@ -92,11 +88,11 @@ void renderTiles(Map &m)
 {
 	glBindTexture(GL_TEXTURE_2D, mptr->mapTilesTexture->texture);
 
-	__declspec(align(16)) std::map<GLuint, std::vector<glm::mat4>> uniqueMap;
+	__declspec(align(16)) std::unordered_map<GLuint, std::vector<glm::mat4>> uniqueMap;
 	
 	for (int i = 0; i < m.totalTiles; i++)
 	{
-		if (uniqueMap.find(i) == uniqueMap.end())
+		if (uniqueMap.find(mptr->mapTilesTexture[m.tileSet[i].type].vao) == uniqueMap.end())
 		{
 			if (checkCollision(camptr->camRect, m.tileSet[i].box))
 			{
@@ -122,6 +118,6 @@ void renderTiles(Map &m)
 
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, kv.second.size() * 64, kv.second.data());
 		
-		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL, kv.second.size());
+		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL, kv.second.size());
 	}
 }

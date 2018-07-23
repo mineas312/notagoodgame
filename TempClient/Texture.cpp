@@ -22,7 +22,7 @@ void Texture::render(int x, int y)
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, glm::value_ptr(mvp));
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
 
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL);
 }
 
 void Texture::setTexture(const char * path, SDL_Rect * clip, int w, int h)
@@ -77,7 +77,7 @@ void Texture::setTexture(const char * path, SDL_Rect * clip, int w, int h)
 
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indexData, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(uint16_t), indexData, GL_STATIC_DRAW);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glUseProgram(shadptr->ProgID);

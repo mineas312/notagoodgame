@@ -26,7 +26,7 @@ public:
 	GLuint vao;
 	GLuint texture;
 private:
-	const GLuint indexData[6] = { 0, 1, 2, 1, 2, 3 };
+	const uint8_t indexData[6] = { 0, 1, 2, 1, 2, 3 };
 	GLuint vbo;
 	GLuint ibo;
 	float width;
