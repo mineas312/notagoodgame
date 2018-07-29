@@ -11,7 +11,7 @@ layout(location = 0) in vec3 vec2Dpos;
 layout(location = 1) in vec2 texcoord;
 
 layout (std140, binding = 0) uniform MVPMatrixInst{
-	InternalMatrix matrix[256];
+	InternalMatrix matrix[1025];
 };
 
 out vec2 Texcoord;

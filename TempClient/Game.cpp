@@ -29,7 +29,7 @@ void Game::init()
 
 	glGenBuffers(1, &ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
-	glBufferData(GL_UNIFORM_BUFFER, 256 * 4 * 4 * 4, NULL, GL_STREAM_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, 1025 * 4 * 4 * 4, NULL, GL_STREAM_DRAW);
 }
 
 void Game::loop()
@@ -136,13 +136,10 @@ void renderObjects(Map &m)
 		}
 	}
 
-	glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
-
 	for (auto& kv : uniqueMap) {
-		glBindTexture(GL_TEXTURE_2D, mptr->mapObjTextures[kv.first].texture);
-
 		glBindVertexArray(mptr->mapObjTextures[kv.first].vao);
+
+		glBindTexture(GL_TEXTURE_2D, mptr->mapObjTextures[kv.first].texture);
 
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, kv.second.size() * 64, kv.second.data());
 

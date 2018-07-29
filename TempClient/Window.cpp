@@ -62,7 +62,7 @@ void Window::init()
 		
 	// Enable debug output
 	glEnable(GL_DEBUG_OUTPUT);
-	glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
 	// Enable all messages and test output
 	glDebugMessageCallback(oglDebugCallback, nullptr);
