@@ -2,7 +2,7 @@
 
 #include "Media.h"
 
-Media::Media() noexcept : mapTilesTexture{ NULL }
+Media::Media() noexcept : mapTilesTexture{ NULL }, mapObjTextures{ NULL }
 {
 }
 

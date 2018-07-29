@@ -3,11 +3,11 @@
 #include "Map.h"
 #include "Common.h"
 
-// -Call it without extension
+// -Call path to the folder
 //   +The files are needed to run map:
-//     .txt containing all tiles counting from left side in PNG,
-//     .map containing map data
-//     .png containing tiles
+//     tilesetInfo.txt containing all tiles counting from left side in PNG,
+//     mapFile.map containing map data
+//     tileset.png containing tiles
 
 void Map::setMap(const int _width, const int _height, const char * path)
 {
@@ -42,7 +42,7 @@ bool Map::collides(SDL_Rect & box)
 void Map::loadTiles(const char * path)
 {
 	std::stringstream ctxt;
-	ctxt << path << ".txt";
+	ctxt << path << "/tilesetInfo.txt";
 
 	std::ifstream txt(ctxt.str());
 	if (!txt.is_open())
@@ -81,9 +81,9 @@ void Map::loadTiles(const char * path)
 
 	std::stringstream ctile;
 #ifdef USE_FORMAT_PNG
-	ctile << path << ".png";
+	ctile << path << "/tileset.png";
 #else
-	ctile << path << ".KTX";
+	ctile << path << "/tileset.KTX";
 #endif
 
 	Texture * tiles = new Texture[static_cast<uint64_t>(totalTileSetTiles)];
@@ -109,7 +109,7 @@ void Map::createTiles(const char * path)
 
 	std::stringstream cmap;
 
-	cmap << path << ".map";
+	cmap << path << "/mapFile.map";
 
 	std::ifstream map(cmap.str());
 	if (!map.is_open())
@@ -194,4 +194,65 @@ void Map::free()
 		delete[] tileInfo;
 		tileInfo = NULL;
 	}
+
+	if (objects != NULL)
+	{
+		delete[] objects;
+		objects = NULL;
+	}
+
+	if (mptr->mapTilesTexture != NULL)
+	{
+		delete mptr->mapTilesTexture;
+		mptr->mapTilesTexture = NULL;
+	}
+	if (mptr->mapObjTextures != NULL)
+	{
+		delete[] mptr->mapObjTextures;
+		mptr->mapObjTextures = NULL;
+	}
+}
+
+void Map::loadObjects(const char * path)
+{
+	std::stringstream ctxt;
+	ctxt << path << "/objects.txt";
+
+	std::ifstream txt(ctxt.str());
+	if (!txt.is_open())
+	{
+		printf("Unable to load tile's info!\n");
+		fprintf(stderr, "Unable to load tile's info!\n");
+		exit(-4);
+	}
+
+	int count;
+	txt >> count;
+	mptr->mapObjTextures = new Texture[count];
+
+	for (int i = 0; i < count; i++)
+	{
+		std::stringstream sobj;
+		sobj << path << "/obj/obj" << i << ".png";
+		mptr->mapObjTextures[i].setTexture(sobj.str().c_str());
+	}
+
+	txt >> objCount;
+	objects = new Object[objCount];
+	
+	for (int i = 0; i < objCount; i++)
+	{
+		int owidth, oheight, ox, oy, oid;
+		bool cmt;
+
+		txt >> owidth;
+		txt >> oheight;
+		txt >> ox;
+		txt >> oy;
+		txt >> cmt;
+		txt >> oid;
+
+		objects[i].set(owidth, oheight, ox, oy, cmt, oid);
+	}
+	txt.close();
 }

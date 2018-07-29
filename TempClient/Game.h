@@ -3,6 +3,7 @@
 #include "Event.h"
 
 void renderTiles(Map &m);
+void renderObjects(Map &m);
 
 class Game
 {

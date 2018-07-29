@@ -1,5 +1,6 @@
 #pragma once
 #include "Tile.h"
+#include "Object.h"
 
 class Map
 {
@@ -12,20 +13,22 @@ public:
 	//     .txt containing all tiles counting from left side in PNG,
 	//     .map containing map data
 	//     .png containing tiles
-	void setMap(const int _width, const int _height, const char* path);
+	void setMap(const int _width, const int _height, const char * path);
 
 	SDL_Rect* getTilesPlace() noexcept;
 
 	bool collides(SDL_Rect& box);
 
 private:
-	void loadTiles(const char* path);
+	void loadTiles(const char * path);
 
-	void createTiles(const char* path);
+	void createTiles(const char * path);
 
 	void loadTilesPlace() noexcept;
 
 	void free();
+
+	void loadObjects(const char * path);
 
 private:
 	int tilesFileWidth;
@@ -36,8 +39,10 @@ public:
 	int width;
 	int height;
 	int totalTiles;
-	GLuint vao;
 
 	Tile* tileSet;
 	SDL_Rect* tilesPlace;
+
+	int objCount;
+	Object * objects;
 };

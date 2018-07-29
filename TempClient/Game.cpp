@@ -22,8 +22,7 @@ void Game::init()
 	shadptr->InitShader("res/shaders/tiles.vert", "res/shaders/tiles.frag");
 	mptr->loadMedia();
 	camptr->init();
-	//Map loading
-	map.setMap(5120, 3840, "res/lazy");
+	map.setMap(5120, 3840, "res/map1");
 
 	charptr->setCharacter((char*)"Janusz", 0, 0);
 	glClearColor(0.0, 0.0, 0.5, 1.0);
@@ -67,6 +66,7 @@ void Game::render() noexcept
 
 	glUseProgram(shadptr->ProgID);
 	renderTiles(map);
+	renderObjects(map);
 
 	mptr->charTexture.render(charptr->entity.box.x, charptr->entity.box.y);
 
@@ -119,5 +119,29 @@ void renderTiles(Map &m)
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, kv.second.size() * 64, kv.second.data());
 		
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL, kv.second.size());
+	}
+}
+
+void renderObjects(Map &m)
+{
+	__declspec(align(16)) std::unordered_map<GLuint, std::vector<glm::mat4>> uniqueMap;
+
+	for (int i = 0; i < m.objCount; i++)
+	{
+		glBindTexture(GL_TEXTURE_2D, mptr->mapObjTextures[i].texture);
+
+		for (int ii = 0; i < m.objCount; i++)
+		{
+			if (m.objects[ii].id != i)
+				continue;
+
+			glBindVertexArray(mptr->mapObjTextures[i].vao);
+			glm::mat4 model = glm::translate(identityMatrix, glm::vec3(m.objects[ii].box.x * winptr->rangePerWidthPixel, -m.objects[ii].box.y * winptr->rangePerHeightPixel, 0.0f));
+			glm::mat4 mvp = camptr->proj * camptr->view * model;
+			glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, glm::value_ptr(mvp));
+			glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL);
+		}
 	}
 }

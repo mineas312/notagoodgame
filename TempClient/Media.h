@@ -11,6 +11,7 @@ public:
 public:
 	Texture charTexture;
 	Texture * mapTilesTexture;
+	Texture * mapObjTextures;
 };
 
 extern Media* mptr;

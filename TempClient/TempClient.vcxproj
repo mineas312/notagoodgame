@@ -215,6 +215,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Media.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="OGLDebug.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp">
@@ -251,6 +252,7 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Media.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="OGLDebug.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stdafx.h" />
