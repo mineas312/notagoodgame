@@ -37,6 +37,14 @@ bool Map::collides(SDL_Rect & box)
 				return true;
 		}
 	}
+	for (int i = 0; i < objCount; i++)
+	{
+		if (!objects[i].canMoveThrough)
+		{
+			if (checkCollision(box, objects[i].box))
+				return true;
+		}
+	}
 	return false;
 }
 

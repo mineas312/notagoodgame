@@ -60,13 +60,12 @@ void Game::close() noexcept
 
 void Game::render() noexcept
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	camptr->center(charptr->entity.box.x - winptr->SCREEN_WIDTH/2, charptr->entity.box.y - winptr->SCREEN_HEIGHT/2, map);
+	camptr->center(charptr->entity.box.x - winptr->SCREEN_WIDTH/2 - charptr->entity.box.w/2, charptr->entity.box.y - winptr->SCREEN_HEIGHT/2 + charptr->entity.box.h/2, map);
 
 	glUseProgram(shadptr->ProgID);
-	renderTiles(map);
-	renderObjects(map);
+	renderMap(map);
 
 	mptr->charTexture.render(charptr->entity.box.x, charptr->entity.box.y);
 
@@ -78,18 +77,19 @@ void Game::update()
 {
 	if (charptr->moving)
 	{
-		charptr->entity.move(map, currentFPS);
+		charptr->move(map, currentFPS);
 	}
 }
 
 Game* gptr;
 
-void renderTiles(Map &m)
+void Game::renderMap(Map & m)
 {
+	// Tiles rendering
 	glBindTexture(GL_TEXTURE_2D, mptr->mapTilesTexture->texture);
 
 	__declspec(align(16)) std::unordered_map<GLuint, std::vector<glm::mat4>> uniqueMap;
-	
+
 	for (int i = 0; i < m.totalTiles; i++)
 	{
 		if (uniqueMap.find(mptr->mapTilesTexture[m.tileSet[i].type].vao) == uniqueMap.end())
@@ -117,26 +117,30 @@ void renderTiles(Map &m)
 		glBindVertexArray(kv.first);
 
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, kv.second.size() * 64, kv.second.data());
-		
+
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL, kv.second.size());
 	}
-}
 
-void renderObjects(Map &m)
-{
-	__declspec(align(16)) std::unordered_map<GLuint, std::vector<glm::mat4>> uniqueMap;
-	
+	// Objects rendering
+	__declspec(align(16)) std::unordered_map<int, std::vector<glm::mat4>> uniqueMap2;
+
 	for (int i = 0; i < m.objCount; i++) {
-		if (uniqueMap.find(m.objects[i].id) == uniqueMap.end()) {
-			uniqueMap.emplace(std::make_pair(m.objects[i].id, std::vector<glm::mat4>()));
-			uniqueMap.at(m.objects[i].id).push_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
+		if (uniqueMap2.find(m.objects[i].id) == uniqueMap2.end()) {
+			if (checkCollision(camptr->camRect, m.objects[i].box))
+			{
+				uniqueMap2.emplace(std::make_pair(m.objects[i].id, std::vector<glm::mat4>()));
+				uniqueMap2.at(m.objects[i].id).push_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
+			}
 		}
 		else {
-			uniqueMap.at(m.objects[i].id).push_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
+			if (checkCollision(camptr->camRect, m.objects[i].box))
+			{
+				uniqueMap2.at(m.objects[i].id).push_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
+			}
 		}
 	}
 
-	for (auto& kv : uniqueMap) {
+	for (auto& kv : uniqueMap2) {
 		glBindVertexArray(mptr->mapObjTextures[kv.first].vao);
 
 		glBindTexture(GL_TEXTURE_2D, mptr->mapObjTextures[kv.first].texture);
@@ -145,23 +149,4 @@ void renderObjects(Map &m)
 
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL, kv.second.size());
 	}
-
-	/*for (int i = 0; i < m.objCount; i++)
-	{
-		glBindTexture(GL_TEXTURE_2D, mptr->mapObjTextures[i].texture);
-
-		for (int ii = 0; i < m.objCount; i++)
-		{
-			if (m.objects[ii].id != i)
-				continue;
-
-			glBindVertexArray(mptr->mapObjTextures[i].vao);
-			glm::mat4 model = glm::translate(identityMatrix, glm::vec3(m.objects[ii].box.x * winptr->rangePerWidthPixel, -m.objects[ii].box.y * winptr->rangePerHeightPixel, 0.0f));
-			glm::mat4 mvp = camptr->proj * camptr->view * model;
-			glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, glm::value_ptr(mvp));
-			glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL);
-		}
-	}*/
 }

@@ -2,9 +2,6 @@
 #include "Window.h"
 #include "Event.h"
 
-void renderTiles(Map &m);
-void renderObjects(Map &m);
-
 class Game
 {
 public:
@@ -21,6 +18,8 @@ private:
 	void render() noexcept;
 
 	void update();
+
+	void renderMap(Map &m);
 
 public:
 	GLuint ubo;
