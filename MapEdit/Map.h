@@ -6,10 +6,13 @@
 #include <SDL_image.h>
 #include <sstream>
 #include <fstream>
+#include <vector>
 
 #include "Window.h"
+#include "Object.h"
 
 Texture g_TileSetTiles;
+Texture * g_ObjectTextures;
 
 struct TileInfo
 {
@@ -74,6 +77,7 @@ public:
 		height = 0;
 		totalTiles = 0;
 		totalTileSetTiles = 0;
+		objCount = 0;
 		tilesPlace = NULL;
 		tileInfo = NULL;
 		tileSet = NULL;
@@ -91,12 +95,13 @@ public:
 		totalTiles = width / TILE_WIDTH * height / TILE_HEIGHT;
 
 		loadTiles(path);
+		loadObjects(path.c_str());
 	}
 private:
 	void loadTiles(std::string path)
 	{
 		std::stringstream ctxt;
-		ctxt << path << ".txt";
+		ctxt << path << "/tilesetInfo.txt";
 
 		std::ifstream txt(ctxt.str());
 		if (!txt.is_open())
@@ -128,7 +133,7 @@ private:
 		txt.close();
 
 		std::stringstream ctile;
-		ctile << path << ".png";
+		ctile << path << "/tileset.png";
 
 		g_TileSetTiles.loadTexture(ctile.str().c_str());
 
@@ -141,7 +146,7 @@ private:
 
 		std::stringstream cmap;
 
-		cmap << path << ".map";
+		cmap << path << "/mapFile.map";
 
 		std::ifstream map(cmap.str());
 		if (!map.is_open())
@@ -207,12 +212,66 @@ private:
 	}
 	void free()
 	{
-		delete[] tilesPlace;
-		tilesPlace = NULL;
-		delete[] tileInfo;
-		tileInfo = NULL;
-		delete[] tileSet;
-		tileSet = NULL;
+		if (tilesPlace != NULL)
+		{
+			delete[] tilesPlace;
+			tilesPlace = NULL;
+		}
+		if (tileInfo != NULL)
+		{
+			delete[] tileInfo;
+			tileInfo = NULL;
+		}
+		if (tileSet != NULL)
+		{
+			delete[] tileSet;
+			tileSet = NULL;
+		}
+	}
+	void loadObjects(const char * path)
+	{
+		std::stringstream ctxt;
+		ctxt << path << "/objects.txt";
+
+		std::ifstream txt(ctxt.str());
+		if (!txt.is_open())
+		{
+			printf("Unable to load tile's info!\n");
+			fprintf(stderr, "Unable to load tile's info!\n");
+			exit(-4);
+		}
+
+		int count;
+		txt >> count;
+		g_ObjectTextures = new Texture[count];
+
+		for (int i = 0; i < count; i++)
+		{
+			std::stringstream sobj;
+			sobj << path << "/obj/obj" << i << ".png";
+			g_ObjectTextures[i].loadTexture(sobj.str().c_str());
+		}
+
+		txt >> objCount;
+
+		for (int i = 0; i < objCount; i++)
+		{
+			int owidth, oheight, ox, oy, oid;
+			bool cmt;
+
+			txt >> owidth;
+			txt >> oheight;
+			txt >> ox;
+			txt >> oy;
+			txt >> cmt;
+			txt >> oid;
+
+			Object obj;
+			obj.set(owidth, oheight, ox, oy, cmt, oid);
+			objects.push_back(obj);
+		}
+		objCount = count;
+		txt.close();
 	}
 public:
 	int width;
@@ -222,4 +281,6 @@ public:
 	SDL_Rect * tilesPlace;
 	TileInfo * tileInfo;
 	Tile * tileSet;
+	int objCount;
+	std::vector<Object> objects;
 };

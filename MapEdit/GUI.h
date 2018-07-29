@@ -11,40 +11,58 @@ public:
 		backgroudGUI.w = 256;
 		backgroudGUI.h = wptr->SCREEN_HEIGHT;
 	}
-	void renderGUI(Map &m, int currentID)
+	void renderGUI(Map &m, int currentID, int mode, int currentObjID)
 	{
 		SDL_SetRenderDrawColor(g_renderer, 100, 100, 100, 255);
 		SDL_RenderFillRect(g_renderer, &backgroudGUI);
 
-		for(int i = 0; i < m.totalTileSetTiles; i++)
+		if (mode == 0)
 		{
-			g_TileSetTiles.render(tilesPosition[i].x + wptr->camera.w, tilesPosition[i].y, &m.tilesPlace[i]);
-			if (currentID == i)
+			for (int i = 0; i < m.totalTileSetTiles; i++)
 			{
-				SDL_SetRenderDrawColor(g_renderer, 150, 0, 0, 255);
-				SDL_Rect tmpRect = tilesPosition[i];
-				tmpRect.x += wptr->camera.w;
-				while (tmpRect.y >= wptr->SCREEN_HEIGHT)
+				g_TileSetTiles.render(tilesPosition[i].x + wptr->camera.w, tilesPosition[i].y, &m.tilesPlace[i]);
+				if (currentID == i)
 				{
-					for (int i = 0; i < m.totalTileSetTiles; i++)
+					SDL_SetRenderDrawColor(g_renderer, 150, 0, 0, 255);
+					SDL_Rect tmpRect = tilesPosition[i];
+					tmpRect.x += wptr->camera.w;
+					while (tmpRect.y >= wptr->SCREEN_HEIGHT)
 					{
-						tilesPosition[i].y -= TILE_HEIGHT;
+						for (int i = 0; i < m.totalTileSetTiles; i++)
+						{
+							tilesPosition[i].y -= TILE_HEIGHT;
+						}
 					}
+					while (tmpRect.y < 0)
+					{
+						for (int i = 0; i < m.totalTileSetTiles; i++)
+						{
+							tilesPosition[i].y += TILE_HEIGHT;
+						}
+					}
+					SDL_RenderDrawRect(g_renderer, &tmpRect);
 				}
-				while (tmpRect.y < 0)
+			}
+		}
+		else
+		{
+			for (int i = 0; i < m.objCount; i++)
+			{
+				g_ObjectTextures[i].render(objectsPosition[i].x + wptr->camera.w, objectsPosition[i].y);
+				if (currentObjID == i)
 				{
-					for (int i = 0; i < m.totalTileSetTiles; i++)
-					{
-						tilesPosition[i].y += TILE_HEIGHT;
-					}
+					SDL_SetRenderDrawColor(g_renderer, 150, 0, 0, 255);
+					SDL_Rect tmpRect = objectsPosition[i];
+					tmpRect.x += wptr->camera.w;
+					SDL_RenderDrawRect(g_renderer, &tmpRect);
 				}
-				SDL_RenderDrawRect(g_renderer, &tmpRect);
 			}
 		}
 	}
 	void init(Map &m)
 	{
 		tilesPosition = new SDL_Rect[m.totalTileSetTiles];
+		objectsPosition = new SDL_Rect[m.objCount];
 
 		for (int i = 0; i < m.totalTileSetTiles; i++)
 		{
@@ -60,10 +78,27 @@ public:
 			tilesPosition[i].x = x + 50;
 			tilesPosition[i].y = y;
 		}
+		int x = 0, y = 0, maxY = 0;
+		for (int i = 0; i < m.objCount; i++)
+		{
+			objectsPosition[i].w = m.objects[i].box.w;
+			objectsPosition[i].h = m.objects[i].box.h;
+			if (objectsPosition[i].h > maxY)
+				maxY = objectsPosition[i].h;
+			x += objectsPosition[i].w;
+			while (x >= 160)
+			{
+				x = 0;
+				y += maxY;
+			}
+			objectsPosition[i].x = x + 50;
+			objectsPosition[i].y = y;
+		}
 	}
 private:
 	SDL_Rect backgroudGUI;
 	SDL_Rect * tilesPosition;
+	SDL_Rect * objectsPosition;
 };
 
 GUI * gptr;
