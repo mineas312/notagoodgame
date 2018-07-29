@@ -18,6 +18,7 @@ void Map::setMap(const int _width, const int _height, const char * path)
 	totalTiles = width / TILE_WIDTH * height / TILE_HEIGHT;
 
 	loadTiles(path);
+	loadObjects(path);
 }
 
 SDL_Rect * Map::getTilesPlace() noexcept
