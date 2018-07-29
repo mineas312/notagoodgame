@@ -11,7 +11,7 @@
 
 void Map::setMap(const int _width, const int _height, const char * path)
 {
-	free();
+	//free();
 
 	width = _width;
 	height = _height;

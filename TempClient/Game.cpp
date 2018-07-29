@@ -125,8 +125,31 @@ void renderTiles(Map &m)
 void renderObjects(Map &m)
 {
 	__declspec(align(16)) std::unordered_map<GLuint, std::vector<glm::mat4>> uniqueMap;
+	
+	for (int i = 0; i < m.objCount; i++) {
+		if (uniqueMap.find(m.objects[i].id) == uniqueMap.end()) {
+			uniqueMap.emplace(std::make_pair(m.objects[i].id, std::vector<glm::mat4>()));
+			uniqueMap.at(m.objects[i].id).push_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
+		}
+		else {
+			uniqueMap.at(m.objects[i].id).push_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
+		}
+	}
 
-	for (int i = 0; i < m.objCount; i++)
+	glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
+
+	for (auto& kv : uniqueMap) {
+		glBindTexture(GL_TEXTURE_2D, mptr->mapObjTextures[kv.first].texture);
+
+		glBindVertexArray(mptr->mapObjTextures[kv.first].vao);
+
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, kv.second.size() * 64, kv.second.data());
+
+		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL, kv.second.size());
+	}
+
+	/*for (int i = 0; i < m.objCount; i++)
 	{
 		glBindTexture(GL_TEXTURE_2D, mptr->mapObjTextures[i].texture);
 
@@ -143,5 +166,5 @@ void renderObjects(Map &m)
 			glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL);
 		}
-	}
+	}*/
 }

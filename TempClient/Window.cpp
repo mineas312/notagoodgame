@@ -37,14 +37,18 @@ void Window::init()
 		printf("Error initializing glad");
 		fprintf(stderr, "Error initializing glad");
 	}
+
 	// Multisampling
 #ifdef MSAA
 	glEnable(GL_MULTISAMPLE);
 #else
 	glDisable(GL_MULTISAMPLE);
 #endif
+
+	// Alpha blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	// Multithreaded shader compilation
 	const uint32_t maxThreads = std::thread::hardware_concurrency() != 0 ? std::thread::hardware_concurrency() : 1;
 	if (GLAD_GL_ARB_parallel_shader_compile)
@@ -52,8 +56,7 @@ void Window::init()
 	else if (GLAD_GL_KHR_parallel_shader_compile)
 		glMaxShaderCompilerThreadsKHR(maxThreads);
 
-#ifdef _DEBUGDISABLED
-
+#ifdef _DEBUG
 	printf("OpenGL debug output is enabled\n\n");
 	fprintf(stderr, "OpenGL debug output is enabled\n\n");
 		
@@ -65,15 +68,7 @@ void Window::init()
 	glDebugMessageCallback(oglDebugCallback, nullptr);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_NOTIFICATION, 21, "Debug test message\0");
-	
 #endif
-
-	//// Vsync
-	//if (SDL_GL_SetSwapInterval(1) < 0)
-	//{
-	//	printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-	//	fprintf(stderr, "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-	//}
 
 	SDL_GL_SetSwapInterval(0);
 
