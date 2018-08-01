@@ -81,11 +81,11 @@ public:
 		int x = 0, y = 0, maxY = 0;
 		for (int i = 0; i < m.objCount; i++)
 		{
-			objectsPosition[i].w = m.objects[i].box.w;
-			objectsPosition[i].h = m.objects[i].box.h;
+			objectsPosition[i].w = g_ObjectTextures[i].width;
+			objectsPosition[i].h = g_ObjectTextures[i].height;
 			if (objectsPosition[i].h > maxY)
-				maxY = objectsPosition[i].h;
-			x += objectsPosition[i].w;
+				maxY = g_ObjectTextures[i].height;
+			x += g_ObjectTextures[i].width;
 			while (x >= 160)
 			{
 				x = 0;
