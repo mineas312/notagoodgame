@@ -9,32 +9,40 @@ void Window::init()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
+#ifdef _DEBUG
 		printf("Cannot init SDL. Error: %s\n", SDL_GetError());
+#endif // DEBUG
 		fprintf(stderr, "Cannot init SDL. Error: %s\n", SDL_GetError());
-		std::exit(-1);
+		exit(-1);
 	}
 
 	window = SDL_CreateWindow("Client", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
 	if (window == NULL)
 	{
+#ifdef _DEBUG
 		printf("Cannot create window. Error: %s\n", SDL_GetError());
+#endif // DEBUG
 		fprintf(stderr, "Cannot create window. Error: %s\n", SDL_GetError());
-		std::exit(-1);
+		exit(-1);
 	}
 
 	setOpenGLAtrributes();
 	context = SDL_GL_CreateContext(window);
 	if (context == NULL)
 	{
+#ifdef _DEBUG
 		printf("Cannot create context.Error: %s\n", SDL_GetError());
+#endif // DEBUG
 		fprintf(stderr, "Cannot create context. Error: %s\n", SDL_GetError());
-		std::exit(-1);
+		exit(-1);
 	}
 
 	// glad
 	if (!gladLoadGLLoader(SDL_GL_GetProcAddress))
 	{
+#ifdef _DEBUG
 		printf("Error initializing glad");
+#endif // DEBUG
 		fprintf(stderr, "Error initializing glad");
 	}
 
@@ -76,6 +84,10 @@ void Window::init()
 	const int imgFlags = IMG_INIT_PNG;
 	if (!(IMG_Init(imgFlags) & imgFlags))
 	{
+#ifdef _DEBUG
+		printf("Cannot init PNG loading. Error: %s\n", IMG_GetError());
+#endif // _DEBUG
+
 		fprintf(stderr, "Cannot init PNG loading. Error: %s\n", IMG_GetError());
 		exit(-1);
 	}

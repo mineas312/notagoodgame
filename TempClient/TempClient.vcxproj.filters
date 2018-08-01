@@ -34,6 +34,9 @@
     <Filter Include="Support">
       <UniqueIdentifier>{7052e686-ede7-4b1f-81c1-6db3d0d6f96f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TxtFiles">
+      <UniqueIdentifier>{7a4a3130-5bac-4f62-b384-f3ba23cb6871}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -93,6 +96,9 @@
     <ClCompile Include="Object.cpp">
       <Filter>Objects\Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Game Components\Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h">
@@ -146,5 +152,13 @@
     <ClInclude Include="Object.h">
       <Filter>Objects\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Game Components\Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ErrorList.txt">
+      <Filter>TxtFiles</Filter>
+    </Text>
   </ItemGroup>
 </Project>

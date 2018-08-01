@@ -125,7 +125,7 @@ void Map::createTiles(const char * path)
 	{
 		std::printf("Unable to load map file!\n");
 		std::fprintf(stderr, "Unable to load map file!\n");
-		std::exit(-4);
+		exit(-4);
 	}
 	else
 	{

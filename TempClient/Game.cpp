@@ -12,6 +12,7 @@ Game::Game() noexcept
 	charptr = new Character();
 	shadptr = new Shader();
 	camptr = new Camera();
+	netptr = new Network();
 }
 
 // -Initializates game components
@@ -19,6 +20,7 @@ Game::Game() noexcept
 void Game::init()
 {
 	winptr->init();
+	netptr->init("localhost", 42069);
 	shadptr->InitShader("res/shaders/tiles.vert", "res/shaders/tiles.frag");
 	mptr->loadMedia();
 	camptr->init();
