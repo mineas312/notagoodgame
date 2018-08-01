@@ -35,6 +35,7 @@ public:
 			printf("Cannot create renderer");
 			return false;
 		}
+		SDL_SetRenderDrawBlendMode(g_renderer, SDL_BLENDMODE_BLEND);
 
 		return true;
 	}

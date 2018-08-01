@@ -153,7 +153,8 @@ private:
 		{
 			std::printf("Unable to load map file!\n");
 			std::fprintf(stderr, "Unable to load map file!\n");
-			std::exit(-4);
+			createNewMap(path);
+			exit(-4);
 		}
 		else
 		{
@@ -168,6 +169,8 @@ private:
 				{
 					printf("Error loading map: Unexpected end of file!\n");
 					fprintf(stderr, "Error loading map: Unexpected end of file!\n");
+					createNewMap(path);
+					exit(-4);
 					break;
 				}
 
@@ -179,6 +182,8 @@ private:
 				{
 					printf("Error loading map: Invalid tile type at %d!\n", i);
 					fprintf(stderr, "Error loading map: Invalid tile type at %d!\n", i);
+					createNewMap(path);
+					exit(-4);
 					break;
 				}
 
@@ -272,6 +277,17 @@ private:
 		}
 		objCount = count;
 		txt.close();
+	}
+	void createNewMap(const char * path)
+	{
+		std::stringstream ss;
+		ss << path << "/mapFile.map";
+		std::ofstream file(ss.str());
+		for (int i = 0; i < totalTiles; i++)
+			file << "0 ";
+		file.close();
+		printf("The corrupted map has been replaced by the new one!\n");
+		system("pause");
 	}
 public:
 	int width;

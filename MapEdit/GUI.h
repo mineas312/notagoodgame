@@ -95,6 +95,17 @@ public:
 			objectsPosition[i].y = y;
 		}
 	}
+	void selectRect(SDL_Rect * rect)
+	{
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		rect->w = x - rect->x;
+		rect->h = y - rect->y;
+		SDL_SetRenderDrawColor(g_renderer, 0, 0, 200, 100);
+		SDL_RenderFillRect(g_renderer, rect);
+		SDL_SetRenderDrawColor(g_renderer, 0, 0, 150, 255);
+		SDL_RenderDrawRect(g_renderer, rect);
+	}
 private:
 	SDL_Rect backgroudGUI;
 	SDL_Rect * tilesPosition;

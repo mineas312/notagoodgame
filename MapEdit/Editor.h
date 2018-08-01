@@ -20,6 +20,7 @@ public:
 		gptr = new GUI();
 		mode = TILES_EDITOR;
 		editorMoveThrough = false;
+		rightClick = false;
 	}
 	void init(std::string map, int mapWidth, int mapHeight)
 	{
@@ -71,6 +72,9 @@ public:
 		}
 
 		gptr->renderGUI(m, currentType, mode, currentTypeObject);
+
+		if (rightClick)
+			gptr->selectRect(&select);
 
 		SDL_RenderPresent(g_renderer);
 	}
@@ -190,11 +194,39 @@ private:
 				{
 					if (mode == TILES_EDITOR)
 						putTile();
-					else if (mode == OBJECT_EDITOR)
+					else
 						putObject();
 				}
 				else if (wptr->e.button.button == SDL_BUTTON_RIGHT)
-					removeObject();
+				{
+					if (mode == OBJECT_EDITOR)
+						removeObject();
+					else
+					{
+						if (wptr->e.type == SDL_MOUSEBUTTONDOWN)
+						{
+							int x = 0, y = 0;
+							SDL_GetMouseState(&x, &y);
+							select.x = x;
+							select.y = y;
+							rightClick = true;
+						}
+					}
+				}
+			}
+			if (wptr->e.type == SDL_MOUSEBUTTONUP)
+			{
+				if (wptr->e.button.button == SDL_BUTTON_RIGHT)
+				{
+					if (mode == TILES_EDITOR)
+					{
+						if (wptr->e.type == SDL_MOUSEBUTTONUP)
+						{
+							rightClick = false;
+							replaceTiles();
+						}
+					}
+				}
 			}
 			if (wptr->e.type == SDL_MOUSEWHEEL)
 			{
@@ -226,6 +258,26 @@ private:
 			}
 		}
 	}
+	void replaceTiles()
+	{
+		if (select.x + select.w < select.x)
+		{
+			select.x = select.x + select.w;
+			select.w = -select.w;
+		}
+		if (select.y + select.h < select.y)
+		{
+			select.y = select.y + select.h;
+			select.h = -select.h;
+		}
+		select.x += wptr->camera.x;
+		select.y += wptr->camera.y;
+		for (int i = 0; i < m.totalTiles; i++)
+		{
+			if (check_collision(select, m.tileSet[i].box))
+				m.tileSet[i].setTile(m.tileSet[i].box.x, m.tileSet[i].box.y, currentType, m.tileInfo[currentType]);
+		}
+	}
 private:
 	Map m;
 	bool quit;
@@ -235,6 +287,8 @@ private:
 	bool editorMoveThrough;
 	std::string mapFile;
 	Mode mode;
+	bool rightClick;
+	SDL_Rect select;
 };
 
 Editor * eptr;
