@@ -22,6 +22,8 @@ private:
 
 	void renderMap(Map &m);
 
+	void second();
+
 public:
 	GLuint ubo;
 
@@ -34,6 +36,7 @@ private:
 	//TODO Create component for maps
 	Map map;
 
+	int secCounter = 0;
 
 };
 

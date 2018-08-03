@@ -4,6 +4,9 @@
 #include "Camera.h"
 #include "Common.h"
 
+#define TICKRATE 32
+#define MS_PER_TICK 1000/TICKRATE
+
 Game::Game() noexcept
 {
 	winptr = new Window(1600, 900);
@@ -25,6 +28,7 @@ void Game::init()
 	mptr->loadMedia();
 	camptr->init();
 	map.setMap(5120, 3840, "res/map1");
+	netptr->joinServer();
 
 	charptr->setCharacter((char*)"Janusz", 0, 0);
 	glClearColor(0.0, 0.0, 0.5, 1.0);
@@ -50,6 +54,7 @@ void Game::loop()
 		evptr->checkEvents(quit, charptr->moving);
 		render();
 		update();
+		netptr->networkUpdate(charptr->entity.box.x, charptr->entity.box.y);
 	}
 }
 
@@ -81,6 +86,7 @@ void Game::update()
 	{
 		charptr->move(map, currentFPS);
 	}
+	second();
 }
 
 Game* gptr;
@@ -150,5 +156,19 @@ void Game::renderMap(Map & m)
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, kv.second.size() * 64, kv.second.data());
 
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, NULL, kv.second.size());
+	}
+}
+
+void Game::second()
+{
+	if (secCounter < TICKRATE)
+	{
+		secCounter++;
+		return;
+	}
+	else
+	{
+		netptr->send("", 0, ESTABILISH_CONN);
+		secCounter = 0;
 	}
 }

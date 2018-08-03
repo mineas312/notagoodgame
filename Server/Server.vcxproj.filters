@@ -5,13 +5,51 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{04bb30e8-7320-4eca-a89d-62d65fa2cfa9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Server Components">
+      <UniqueIdentifier>{9e21f6f5-cf95-43ed-beab-9f330e25ceeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Server Components\Headers">
+      <UniqueIdentifier>{278604c4-422f-4cba-9aa8-553e2de19de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Server Components\Source">
+      <UniqueIdentifier>{e74a729d-bec1-4c25-93b5-30f8dd4a025f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Headers">
+      <UniqueIdentifier>{2ebb5b0d-554c-40b0-842c-fd176dfb4887}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Source">
+      <UniqueIdentifier>{a95d0177-7dde-496f-ac4b-4cde4e3aad08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\glad.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Server.cpp">
+      <Filter>Server Components\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Server Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Server.h">
+      <Filter>Server Components\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Server Components\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,9 @@
 #pragma once
-#include <SDL_net.h>
+#include "Client.h"
+#include <cstdio>
+#include <vector>
 
-#define TICKRATE 1000/32
+#define SERVER_SLOTS 100
 
 enum PacketType
 {
@@ -15,37 +17,38 @@ enum PacketType
 class Network
 {
 public:
-	Network() : sendPacket{ NULL }, recvPacket{ NULL }, id { -1 }
+	Network() : nextSlot{ 0 }
 	{}
 
-	void init(const char * ip, Uint16 port);
+	void init(Uint16 port);
 
 	void close();
 
-	void networkUpdate(int charX, int charY);
-
-	void joinServer();
-
-	void send(const char * data, int len, PacketType type);
+	void send(Client client, int len, const char * data, PacketType type);
 
 	void recv();
 
+	void addClient();
+
+	void disconnectClient(int id);
+
 private:
+	void reallocPacket(UDPpacket * packet, int size);
 
 	void processPacket();
-
-	void reallocPacket(UDPpacket * packet, int size);
 
 	void Uint8ToInt(Uint8 * src, int & dest);
 
 	void intToUint8(int src, Uint8 * dst);
 
+public:
+	Client * clients;
+	int nextSlot;
 private:
-	int id;
 	UDPsocket socket;
-	IPaddress addr;
 	UDPpacket * sendPacket;
 	UDPpacket * recvPacket;
+	IPaddress addr;
 };
 
 extern Network * netptr;
