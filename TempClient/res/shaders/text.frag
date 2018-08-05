@@ -1,11 +1,13 @@
-#version 330 core
-
-in vec2 UVs;
-
-uniform sampler2D sampler;
+#version 460 core
 
 out vec4 color;
 
+in vec2 texOffset;
+uniform sampler2D texBitmap;
+
+uniform vec3 textColor;
+
 void main(){
-	color = texture(sampler, UVs);
+    color = texture(texBitmap, texOffset);
+
 }

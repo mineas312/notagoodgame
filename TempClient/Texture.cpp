@@ -14,9 +14,9 @@ void Texture::render(int x, int y)
 	glBindVertexArray(vao);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	glm::mat4 model = glm::translate(identityMatrix, glm::vec3(x * winptr->rangePerWidthPixel, -y * winptr->rangePerHeightPixel, 0.0f));
+	const glm::mat4 model = glm::translate(identityMatrix, glm::vec3(x * winptr->rangePerWidthPixel, -y * winptr->rangePerHeightPixel, 0.0f));
 
-	glm::mat4 mvp = camptr->proj * camptr->view * model;
+	const glm::mat4 mvp = camptr->proj * camptr->view * model;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, glm::value_ptr(mvp));
@@ -77,7 +77,7 @@ void Texture::setTexture(const char * path, SDL_Rect * clip, int w, int h)
 
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(uint16_t), indexData, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(uint8_t), indexData, GL_STATIC_DRAW);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glUseProgram(shadptr->ProgID);

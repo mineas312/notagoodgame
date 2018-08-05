@@ -35,7 +35,7 @@ void Game::init()
 
 	glGenBuffers(1, &ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
-	glBufferData(GL_UNIFORM_BUFFER, 1025 * 4 * 4 * 4, NULL, GL_STREAM_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, 1024 * 64, NULL, GL_DYNAMIC_DRAW);
 }
 
 void Game::loop()
@@ -96,7 +96,7 @@ void Game::renderMap(Map & m)
 	// Tiles rendering
 	glBindTexture(GL_TEXTURE_2D, mptr->mapTilesTexture->texture);
 
-	__declspec(align(16)) std::unordered_map<GLuint, std::vector<glm::mat4>> uniqueMap;
+	std::unordered_map<GLuint, std::vector<glm::mat4>> uniqueMap;
 
 	for (int i = 0; i < m.totalTiles; i++)
 	{
@@ -104,20 +104,20 @@ void Game::renderMap(Map & m)
 		{
 			if (checkCollision(camptr->camRect, m.tileSet[i].box))
 			{
-				uniqueMap.emplace(std::make_pair(mptr->mapTilesTexture[m.tileSet[i].type].vao, std::vector<glm::mat4>()));
-				uniqueMap.at(mptr->mapTilesTexture[m.tileSet[i].type].vao).push_back(calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y));
+				uniqueMap.emplace(mptr->mapTilesTexture[m.tileSet[i].type].vao, std::vector<glm::mat4>());
+				uniqueMap[mptr->mapTilesTexture[m.tileSet[i].type].vao].push_back(calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y));
 			}
 		}
 		else
 		{
 			if (checkCollision(camptr->camRect, m.tileSet[i].box))
 			{
-				uniqueMap.at(mptr->mapTilesTexture[m.tileSet[i].type].vao).push_back(calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y));
+				uniqueMap[mptr->mapTilesTexture[m.tileSet[i].type].vao].push_back(calcMVP(m.tileSet[i].box.x, m.tileSet[i].box.y));
 			}
 		}
 	}
 
-	glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
+	//glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
 
 	for (auto& kv : uniqueMap)
@@ -130,20 +130,20 @@ void Game::renderMap(Map & m)
 	}
 
 	// Objects rendering
-	__declspec(align(16)) std::unordered_map<int, std::vector<glm::mat4>> uniqueMap2;
+	std::unordered_map<int, std::vector<glm::mat4>> uniqueMap2;
 
 	for (int i = 0; i < m.objCount; i++) {
 		if (uniqueMap2.find(m.objects[i].id) == uniqueMap2.end()) {
 			if (checkCollision(camptr->camRect, m.objects[i].box))
 			{
 				uniqueMap2.emplace(std::make_pair(m.objects[i].id, std::vector<glm::mat4>()));
-				uniqueMap2.at(m.objects[i].id).push_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
+				uniqueMap2[m.objects[i].id].emplace_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
 			}
 		}
 		else {
 			if (checkCollision(camptr->camRect, m.objects[i].box))
 			{
-				uniqueMap2.at(m.objects[i].id).push_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
+				uniqueMap2[m.objects[i].id].emplace_back(calcMVP(m.objects[i].box.x, m.objects[i].box.y));
 			}
 		}
 	}

@@ -127,7 +127,7 @@ void Network::processPacket()
 		}
 		else if (clients[id].used)
 		{
-			int x, y;
+			int x = 0; int y = 0;
 			Uint8ToInt(&recvPacket->data[7], x);
 			Uint8ToInt(&recvPacket->data[11], x);
 			clients[id].entity.x = x;

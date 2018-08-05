@@ -155,6 +155,9 @@
     <ClInclude Include="Network.h">
       <Filter>Game Components\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>Support</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ErrorList.txt">

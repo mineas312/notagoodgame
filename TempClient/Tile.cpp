@@ -2,7 +2,7 @@
 #include "Camera.h"
 #include "Tile.h"
 #include "Common.h"
-Tile::Tile() noexcept : box{ 0,0,TILE_WIDTH, TILE_HEIGHT }, type{ 0 }
+Tile::Tile() noexcept : box{ 0, 0, TILE_WIDTH, TILE_HEIGHT }, type{ 0 }
 {}
 
 void Tile::setTile(const int x, const int y, const int _type, TileInfo & info)
