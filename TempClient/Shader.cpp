@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Shader.h"
+#include "ThreadPool.h"
 
 Shader::Shader() noexcept : isValid{ false }, ProgID{ 0 }, VSID{ 0 }, FSID{ 0 }
 {}
@@ -12,47 +13,51 @@ Shader::Shader(const char * vs, const char * fs) : isValid{ false }, ProgID{ 0 }
 bool Shader::InitShader(const char * vs, const char * fs)
 {
 	std::string tmp;
+
+	GLchar* vsCodeCstr;
+	GLchar* fsCodeCstr;
 	
 	// Vertex shader
 	std::stringstream vsSS;
 	std::fstream vsFile(vs, std::ios::in | std::ios::beg);
 
-	while (std::getline(vsFile, tmp))
-	{
+	while (std::getline(vsFile, tmp)) {
 		vsSS << tmp << "\n";
 	}
-	
-	std::string vsCode = vsSS.str();
-	GLchar* vsPomocy = new GLchar[vsCode.size() + 1];
-	std::memcpy(vsPomocy, vsCode.data(), vsCode.size());
-	vsPomocy[vsCode.size()] = '\0';
 
-	VSID = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(VSID, 1, &vsPomocy, NULL);
-	glCompileShader(VSID);
-	
+	std::string vsCode = vsSS.str();
+	vsCodeCstr = new GLchar[vsCode.size() + 1];
+	std::memcpy(vsCodeCstr, vsCode.data(), vsCode.size());
+	vsCodeCstr[vsCode.size()] = '\0';
+
+	vsFile.close();
+
 	// Fragment shader
 	std::stringstream fsSS;
 	std::fstream fsFile(fs, std::ios::in | std::ios::beg);
-	while (std::getline(fsFile, tmp))
-	{
+	while (std::getline(fsFile, tmp)) {
 		fsSS << tmp << "\n";
 	}
 
 	std::string fsCode = fsSS.str();
-	GLchar* fsPomocy = new GLchar[fsCode.size()+1];
-	std::memcpy(fsPomocy, fsCode.data(), fsCode.size());
-	fsPomocy[fsCode.size()] = '\0';
+	fsCodeCstr = new GLchar[fsCode.size() + 1];
+	std::memcpy(fsCodeCstr, fsCode.data(), fsCode.size());
+	fsCodeCstr[fsCode.size()] = '\0';
 
+	fsFile.close();
+
+	// Compilation
+	VSID = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(VSID, 1, &vsCodeCstr, NULL);
+	glCompileShader(VSID);
+	
 	FSID = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(FSID, 1, &fsPomocy, NULL);
+	glShaderSource(FSID, 1, &fsCodeCstr, NULL);
 	glCompileShader(FSID);
 
 	// Cleanup
-	vsFile.close();
-	fsFile.close();
-	delete[] vsPomocy;
-	delete[] fsPomocy;
+	delete[] vsCodeCstr;
+	delete[] fsCodeCstr;
 
 	Log(VSID);
 	Log(FSID);

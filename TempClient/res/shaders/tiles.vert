@@ -11,7 +11,7 @@ layout(location = 0) in vec3 vec2Dpos;
 layout(location = 1) in vec2 texcoord;
 
 layout (std140, binding = 0) uniform MVPMatrixInst{
-	InternalMatrix matrix[1025];
+	InternalMatrix matrix[1024];
 };
 
 out vec2 Texcoord;
@@ -23,6 +23,6 @@ void main() {
 	MVP[2] = matrix[gl_InstanceID].C3;
 	MVP[3] = matrix[gl_InstanceID].C4;
 	
-	gl_Position = MVP*vec4( vec2Dpos, 1 );
+	gl_Position = MVP * vec4(vec2Dpos, 1);
 	Texcoord = texcoord;
 }
