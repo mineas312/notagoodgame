@@ -10,6 +10,8 @@ void Server::init()
 
 	netptr->init(42069);
 
+	printf("[INFO] Server initialization complete\n");
+
 	loop();
 }
 
@@ -30,6 +32,26 @@ void Server::loop()
 void Server::update()
 {
 	second();
+	for (int i = 0; i < SERVER_SLOTS; i++)
+	{
+		if (netptr->clients[i].used)
+		{
+			for (int ii = 0; ii < SERVER_SLOTS; ii++)
+			{
+				if (netptr->clients[ii].used)
+				{
+					if (ii != i)
+					{
+						Uint8 data[12];
+						netptr->intToUint8(netptr->clients[ii].entity.x, &data[0]);
+						netptr->intToUint8(netptr->clients[ii].entity.y, &data[4]);
+						netptr->intToUint8(ii, &data[8]);
+						netptr->send(netptr->clients[i], 12, (char*)data, ENTITY_POSITION);
+					}
+				}
+			}
+		}
+	}
 }
 
 void Server::second()

@@ -38,6 +38,7 @@ private:
 
 	int secCounter = 0;
 
+	std::vector<Entity> entities;
 };
 
 extern Game* gptr;

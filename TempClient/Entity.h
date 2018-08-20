@@ -4,7 +4,7 @@
 class Entity
 {
 public:
-	Entity() noexcept : box{ 0, 0, 0, 0 }, name { NULL }
+	Entity() noexcept : box{ 0, 0, 0, 0 }, name { NULL }, id{ -1 }
 	{}
 
 	void del() noexcept;
@@ -13,6 +13,8 @@ public:
 
 public:
 	SDL_Rect box;
+
+	int id;
 
 	char* name;
 };

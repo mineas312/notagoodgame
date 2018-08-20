@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Network.h"
 
-void Network::init(const char * ip, Uint16 port)
+void Network::init(const char * ip, Uint16 port, std::vector<Entity> * ent)
 {
 	if (SDLNet_Init() < 0)
 	{
@@ -41,10 +41,14 @@ void Network::init(const char * ip, Uint16 port)
 		fprintf(stderr, "SDLNet_AllocPacket Error: %s\n", SDLNet_GetError());
 		exit(2);
 	}
+	entities = ent;
 }
 
 void Network::send(const char * data, int len, PacketType type)
 {
+	if (id == -1 && type != CONNECT)
+		return;
+
 	Uint8 typeUint8[4];
 	intToUint8(type, typeUint8);
 
@@ -57,7 +61,7 @@ void Network::send(const char * data, int len, PacketType type)
 	memcpy(&msg[8], data, len);
 
 	sendPacket->len = 8 + len;
-	memcpy(sendPacket->data, msg, 8 + len);
+	sendPacket->data = msg;
 	sendPacket->address = addr;
 
 	int numsent;
@@ -82,19 +86,53 @@ void Network::recv()
 	}
 }
 
+void Network::disconnect()
+{
+	send("", 0, DISCONNECT);
+}
+
 void Network::processPacket()
 {
 	int type;
 	Uint8ToInt(&recvPacket->data[0], type);
 	switch ((PacketType)type)
 	{
+	case ENTITY_DISCONNECT:
+		int _id;
+		netptr->Uint8ToInt(&recvPacket->data[4], _id);
+		disconnectEntity(_id);
+		break;
+	case SEND_CLIENTS:
+	{
+		int eid, ex, ey;
+		netptr->Uint8ToInt(&recvPacket->data[4], ex);
+		netptr->Uint8ToInt(&recvPacket->data[8], ey);
+		netptr->Uint8ToInt(&recvPacket->data[12], eid);
+		Entity en;
+		en.id = eid;
+		en.box.x = ex;
+		en.box.y = ey;
+		entities->push_back(en);
+		break;
+	}
 	case CONNECT:
-		memcpy(&id, &recvPacket->data[4], 4);
+		Uint8ToInt(&recvPacket->data[4], id);
 		break;
 	case ENTITY_POSITION:
 	{
+		int eid, ex, ey;
+		netptr->Uint8ToInt(&recvPacket->data[4], ex);
+		netptr->Uint8ToInt(&recvPacket->data[8], ey);
+		netptr->Uint8ToInt(&recvPacket->data[12], eid);
+		for (Entity & e : *entities)
+		{
+			if (e.id == eid)
+			{
+				e.box.x = ex;
+				e.box.y = ey;
+			}
+		}
 		break;
-		// TODO Move player from server
 	}
 	case DISCONNECT:
 		printf("Disconnected from server");
@@ -127,18 +165,22 @@ void Network::close()
 
 void Network::networkUpdate(int charX, int charY)
 {
-	Uint32 start = SDL_GetTicks();
+	//TODO BUG HERE
+	static Uint32 start = SDL_GetTicks();
+
+	Uint32 delta = SDL_GetTicks();
 
 	recv();
 
-	while (SDL_GetTicks() - start >= TICKRATE)
+	while (delta - start >= TICKRATE)
 	{
 		Uint8 tmp[8];
 		intToUint8(charX, &tmp[0]);
-		intToUint8(charY, &tmp[3]);
+		intToUint8(charY, &tmp[4]);
 		send((char*)tmp, 8, ENTITY_POSITION);
 		start += TICKRATE;
 	}
+	delta = SDL_GetTicks();
 }
 
 void Network::joinServer()
@@ -157,6 +199,17 @@ void Network::intToUint8(int src, Uint8 * dst)
 	for (int i = 0; i < 4; i++)
 		tmp[3 - i] = (src >> (i * 8));
 	memcpy(dst, tmp, 4);
+}
+
+void Network::disconnectEntity(int _id)
+{
+	for (Entity & e : *entities)
+	{
+		if (e.id == _id)
+		{
+			entities->erase(std::remove_if(entities->begin(), entities->end(), [&](Entity & a) {return a.id == e.id; }));
+		}
+	}
 }
 
 Network * netptr;

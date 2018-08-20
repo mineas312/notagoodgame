@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.h"
 #include "Object.h"
+#include "Entity.h"
 
 class Map
 {

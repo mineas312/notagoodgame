@@ -23,11 +23,11 @@ Game::Game() noexcept
 void Game::init()
 {
 	winptr->init();
-	netptr->init("localhost", 42069);
 	shadptr->InitShader("res/shaders/tiles.vert", "res/shaders/tiles.frag");
 	mptr->loadMedia();
 	camptr->init();
 	map.setMap(5120, 3840, "res/map1");
+	netptr->init("localhost", 42069, &entities);
 	netptr->joinServer();
 
 	charptr->setCharacter((char*)"Janusz", 0, 0);
@@ -53,13 +53,14 @@ void Game::loop()
 
 		evptr->checkEvents(quit, charptr->moving);
 		render();
-		update();
 		netptr->networkUpdate(charptr->entity.box.x, charptr->entity.box.y);
+		update();
 	}
 }
 
 void Game::close() noexcept
 {
+	netptr->disconnect();
 	winptr->close();
 	delete winptr;
 	delete evptr;
@@ -73,6 +74,9 @@ void Game::render() noexcept
 
 	glUseProgram(shadptr->ProgID);
 	renderMap(map);
+
+	for (Entity & e : entities)
+		mptr->charTexture.render(e.box.x, e.box.y);
 
 	mptr->charTexture.render(charptr->entity.box.x, charptr->entity.box.y);
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "Client.h"
 #include <cstdio>
-#include <vector>
+#include <cstring>
 
 #define SERVER_SLOTS 100
 
@@ -10,7 +10,9 @@ enum PacketType
 	ENTITY_POSITION,
 	CONNECT,
 	DISCONNECT,
+	SEND_CLIENTS,
 	ESTABILISH_CONN,
+	ENTITY_DISCONNECT,
 	TOTAL_PACKETTYPES
 };
 
@@ -32,14 +34,14 @@ public:
 
 	void disconnectClient(int id);
 
+	void Uint8ToInt(Uint8 * src, int & dest);
+
+	void intToUint8(int src, Uint8 * dst);
+
 private:
 	void reallocPacket(UDPpacket * packet, int size);
 
 	void processPacket();
-
-	void Uint8ToInt(Uint8 * src, int & dest);
-
-	void intToUint8(int src, Uint8 * dst);
 
 public:
 	Client * clients;

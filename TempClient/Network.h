@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL_net.h>
+#include "Map.h"
 
 #define TICKRATE 1000/32
 
@@ -8,7 +9,9 @@ enum PacketType
 	ENTITY_POSITION,
 	CONNECT,
 	DISCONNECT,
+	SEND_CLIENTS,
 	ESTABILISH_CONN,
+	ENTITY_DISCONNECT,
 	TOTAL_PACKETTYPES
 };
 
@@ -18,7 +21,7 @@ public:
 	Network() : sendPacket{ NULL }, recvPacket{ NULL }, id { -1 }
 	{}
 
-	void init(const char * ip, Uint16 port);
+	void init(const char * ip, Uint16 port, std::vector<Entity> * ent);
 
 	void close();
 
@@ -30,6 +33,8 @@ public:
 
 	void recv();
 
+	void disconnect();
+
 private:
 
 	void processPacket();
@@ -40,12 +45,15 @@ private:
 
 	void intToUint8(int src, Uint8 * dst);
 
+	void disconnectEntity(int id);
+
 private:
 	int id;
 	UDPsocket socket;
 	IPaddress addr;
 	UDPpacket * sendPacket;
 	UDPpacket * recvPacket;
+	std::vector<Entity> * entities;
 };
 
 extern Network * netptr;
