@@ -42,11 +42,15 @@ void Server::update()
 				{
 					if (ii != i)
 					{
+						if (netptr->clients[ii].entity.lastX == netptr->clients[ii].entity.x && netptr->clients[ii].entity.lastY == netptr->clients[ii].entity.y)
+							continue;
 						Uint8 data[12];
 						netptr->intToUint8(netptr->clients[ii].entity.x, &data[0]);
 						netptr->intToUint8(netptr->clients[ii].entity.y, &data[4]);
 						netptr->intToUint8(ii, &data[8]);
 						netptr->send(netptr->clients[i], 12, (char*)data, ENTITY_POSITION);
+						netptr->clients[ii].entity.lastX = netptr->clients[ii].entity.x;
+						netptr->clients[ii].entity.lastY = netptr->clients[ii].entity.y;
 					}
 				}
 			}

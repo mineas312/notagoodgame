@@ -4,7 +4,7 @@
 class Entity
 {
 public:
-	Entity() noexcept : x{ 0 }, y{ 0 }, name{ NULL }
+	Entity() noexcept : x{ 0 }, y{ 0 }, name{ NULL }, lastX{ 0 }, lastY{ 0 }
 	{}
 
 	void del() noexcept;
@@ -16,6 +16,9 @@ public:
 public:
 	int x;
 	int y;
+
+	int lastX;
+	int lastY;
 
 	char* name;
 };

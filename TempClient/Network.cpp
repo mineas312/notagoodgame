@@ -128,8 +128,7 @@ void Network::processPacket()
 		{
 			if (e.id == eid)
 			{
-				e.box.x = ex;
-				e.box.y = ey;
+				e.moveInterpolated(ex, ey);
 			}
 		}
 		break;
@@ -137,7 +136,7 @@ void Network::processPacket()
 	case DISCONNECT:
 		printf("Disconnected from server");
 		id = -1;
-		// TODO Disconnect
+		break;
 	default:
 		printf("Unrecognized packetType: %d\n", type);
 		break;

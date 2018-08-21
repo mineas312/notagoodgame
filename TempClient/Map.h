@@ -3,6 +3,9 @@
 #include "Object.h"
 #include "Entity.h"
 
+#define TICKRATE 32
+#define MS_PER_TICK 1000/TICKRATE
+
 class Map
 {
 public:

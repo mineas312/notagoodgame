@@ -2,8 +2,6 @@
 #include <SDL_net.h>
 #include "Map.h"
 
-#define TICKRATE 1000/32
-
 enum PacketType
 {
 	ENTITY_POSITION,

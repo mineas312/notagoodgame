@@ -4,9 +4,6 @@
 #include "Camera.h"
 #include "Common.h"
 
-#define TICKRATE 32
-#define MS_PER_TICK 1000/TICKRATE
-
 Game::Game() noexcept
 {
 	winptr = new Window(1600, 900);
@@ -27,7 +24,7 @@ void Game::init()
 	mptr->loadMedia();
 	camptr->init();
 	map.setMap(5120, 3840, "res/map1");
-	netptr->init("localhost", 42069, &entities);
+	netptr->init("25.73.149.25", 42069, &entities);
 	netptr->joinServer();
 
 	charptr->setCharacter((char*)"Janusz", 0, 0);
@@ -40,8 +37,13 @@ void Game::init()
 
 void Game::loop()
 {
+	// Fps counter
 	Uint64 startClock = SDL_GetPerformanceCounter();
 	Uint64 lastClock = 0;
+
+	// Interpolation timer
+	Uint64 timer = SDL_GetPerformanceCounter();
+	Uint64 now = 0;
 
 	while (!quit)
 	{
@@ -50,6 +52,15 @@ void Game::loop()
 		startClock = SDL_GetPerformanceCounter();
 
 		currentFPS = 1000.0 / ((startClock - lastClock) * 1000.0 / static_cast<double>(SDL_GetPerformanceFrequency()));
+
+		// Interpolation timer
+		now = SDL_GetPerformanceCounter();
+		while (now - timer >= 10)
+		{
+			for (Entity & e : entities)
+				e.tickInterpolated();
+			timer += 10;
+		}
 
 		evptr->checkEvents(quit, charptr->moving);
 		render();
@@ -90,6 +101,11 @@ void Game::update()
 	{
 		charptr->move(map, currentFPS);
 	}
+
+	// Interpolated move
+	for (Entity & e : entities)
+		e.tickInterpolated();
+
 	second();
 }
 
