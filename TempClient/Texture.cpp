@@ -80,8 +80,8 @@ void Texture::setTexture(const char * path, SDL_Rect * clip, int w, int h)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(uint8_t), indexData, GL_STATIC_DRAW);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glUseProgram(shadptr->ProgID);
-	glUniform1i(glGetUniformLocation(shadptr->ProgID, "sampler"), 0);
+	glUseProgram(shadptr->progGraphics);
+	glUniform1i(glGetUniformLocation(shadptr->progGraphics, "sampler"), 0);
 }
 
 bool Texture::loadTexture(const char * path)

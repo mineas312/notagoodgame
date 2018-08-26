@@ -5,21 +5,18 @@
 class Shader
 {
 public:
-	bool isValid = false;
+	Shader()
+	{}
 
-	Shader() noexcept;
-	Shader(const char* vs, const char* fs);
-
-	bool InitShader(const char* vs, const char* fs);
-
-public:
-	GLuint ProgID;
+	void init();
 
 private:
-	GLuint VSID;
-	GLuint FSID;
-
 	void Log(GLuint ID);
+	void initShader(const char* vs, const char* fs, GLuint &program);
+
+public:
+	GLuint progGraphics;
+	GLuint progText;
 };
 
 extern Shader * shadptr;

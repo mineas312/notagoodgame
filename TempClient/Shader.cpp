@@ -2,15 +2,7 @@
 #include "Shader.h"
 #include "ThreadPool.h"
 
-Shader::Shader() noexcept : isValid{ false }, ProgID{ 0 }, VSID{ 0 }, FSID{ 0 }
-{}
-
-Shader::Shader(const char * vs, const char * fs) : isValid{ false }, ProgID{ 0 }, VSID{ 0 }, FSID{ 0 }
-{
-	isValid = InitShader(vs, fs);
-}
-
-bool Shader::InitShader(const char * vs, const char * fs)
+void Shader::initShader(const char* vs, const char* fs, GLuint &program)
 {
 	std::string tmp;
 
@@ -47,11 +39,11 @@ bool Shader::InitShader(const char * vs, const char * fs)
 	fsFile.close();
 
 	// Compilation
-	VSID = glCreateShader(GL_VERTEX_SHADER);
+	GLuint VSID = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(VSID, 1, &vsCodeCstr, NULL);
 	glCompileShader(VSID);
 	
-	FSID = glCreateShader(GL_FRAGMENT_SHADER);
+	GLuint FSID = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(FSID, 1, &fsCodeCstr, NULL);
 	glCompileShader(FSID);
 
@@ -62,16 +54,19 @@ bool Shader::InitShader(const char * vs, const char * fs)
 	Log(VSID);
 	Log(FSID);
 
-	ProgID = glCreateProgram();
+	program = glCreateProgram();
 
-	glAttachShader(ProgID, VSID);
-	glAttachShader(ProgID, FSID);
-	glLinkProgram(ProgID);
+	glAttachShader(program, VSID);
+	glAttachShader(program, FSID);
+	glLinkProgram(program);
 
-	Log(ProgID);
+	Log(program);
+}
 
-	isValid = true;
-	return true;
+void Shader::init()
+{
+	shadptr->initShader("res/shaders/tiles.vert", "res/shaders/tiles.frag", progGraphics);
+	shadptr->initShader("res/shaders/text.vert", "res/shaders/text.frag", progText);
 }
 
 void Shader::Log(GLuint ID)

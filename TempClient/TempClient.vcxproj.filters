@@ -99,6 +99,9 @@
     <ClCompile Include="Network.cpp">
       <Filter>Game Components\Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Game Components\Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="ThreadPool.h">
       <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Game Components\Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

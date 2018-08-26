@@ -13,6 +13,7 @@ Game::Game() noexcept
 	shadptr = new Shader();
 	camptr = new Camera();
 	netptr = new Network();
+	tptr = new Text();
 }
 
 // -Initializates game components
@@ -20,12 +21,13 @@ Game::Game() noexcept
 void Game::init()
 {
 	winptr->init();
-	shadptr->InitShader("res/shaders/tiles.vert", "res/shaders/tiles.frag");
+	shadptr->init();
 	mptr->loadMedia();
 	camptr->init();
 	map.setMap(5120, 3840, "res/map1");
 	netptr->init("25.73.149.25", 42069, &entities);
 	netptr->joinServer();
+	tptr->init();
 
 	charptr->setCharacter((char*)"Janusz", 0, 0);
 	glClearColor(0.0, 0.0, 0.5, 1.0);
@@ -83,7 +85,8 @@ void Game::render() noexcept
 
 	camptr->center(charptr->entity.box.x - winptr->SCREEN_WIDTH/2 - charptr->entity.box.w/2, charptr->entity.box.y - winptr->SCREEN_HEIGHT/2 + charptr->entity.box.h/2, map);
 
-	glUseProgram(shadptr->ProgID);
+	glUseProgram(shadptr->progGraphics);
+
 	renderMap(map);
 
 	for (Entity & e : entities)
@@ -91,8 +94,11 @@ void Game::render() noexcept
 
 	mptr->charTexture.render(charptr->entity.box.x, charptr->entity.box.y);
 
-	SDL_GL_SwapWindow(winptr->window);
+	glUseProgram(shadptr->progText);
 
+	tptr->render("This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+
+	SDL_GL_SwapWindow(winptr->window);
 }
 
 void Game::update()

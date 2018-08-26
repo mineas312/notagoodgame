@@ -1,7 +1,7 @@
 #pragma once
-#include "Window.h"
 #include "Event.h"
 #include "Network.h"
+#include "Text.h"
 
 class Game
 {
