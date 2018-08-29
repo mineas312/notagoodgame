@@ -28,16 +28,16 @@ void Text::init()
 	createTextureAtlas();
 }
 
-void Text::render(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
+void Text::render(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, const glm::vec3& color)
 {
-	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(vao);
 	glUniform3f(glGetUniformLocation(shadptr->progText, "textColor"), color.x, color.y, color.z);
 
-	GLfloat(*verts)[6][4] = new GLfloat[text.size()][6][4];
+	alignas(16) GLfloat(*verts)[6][4] = new GLfloat[text.size()][6][4];
 
 	std::string::const_iterator c;
 	int n = 0;
+
 	for (c = text.begin(); c != text.end(); c++)
 	{
 		Charact ch = characters[*c];
@@ -48,7 +48,7 @@ void Text::render(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::ve
 		GLfloat w = ch.sizex * scale;
 		GLfloat h = ch.sizey * scale;
 
-		GLfloat vertices[6][4]{
+		alignas(16) GLfloat vertices[6][4]{
 			{ xpos,     ypos + h,   ch.tx, 0.0 },
 			{ xpos,     ypos,       ch.tx, 1.0 - (1.0 - ch.sizey / hAtlas) },
 			{ xpos + w, ypos,       ch.tx + ch.sizex / wAtlas, 1.0 - (1.0 - ch.sizey / hAtlas) },
@@ -57,25 +57,25 @@ void Text::render(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::ve
 			{ xpos + w, ypos,       ch.tx + ch.sizex / wAtlas, 1.0 - (1.0 - ch.sizey / hAtlas) },
 			{ xpos + w, ypos + h,   ch.tx + ch.sizex / wAtlas, 0.0 }
 		};
-		
+
 		for (int i = 0; i < 6; i++)
 		{
-			for (int l = 0; l < 4; l++)
-				verts[n][i][l] = vertices[i][l];
+			/*for (int l = 0; l < 4; l++)
+				verts[n][i][l] = vertices[i][l];*/
+
+			_mm_store_ps(verts[n][i], _mm_load_ps(vertices[i]));
 		}
 
 		x += ((GLuint)ch.ax >> 6) * scale;
 		y += ((GLuint)ch.ay >> 6) * scale;
 		n++;
 	}
+
 	glBindTexture(GL_TEXTURE_2D, tex);
 
 	//glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLfloat[6][4]) * text.size(), verts);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4 * n, NULL, GL_DYNAMIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLfloat) * 6 * 4 * n, verts);
+	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4 * n, verts, GL_DYNAMIC_DRAW);
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, n * 6);
@@ -88,10 +88,13 @@ void Text::createTextureAtlas()
 	glUseProgram(shadptr->progText);
 
 	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
 	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	
 	projection = glm::ortho(0.0f, (float)winptr->SCREEN_WIDTH, 0.0f, (float)winptr->SCREEN_HEIGHT);
 	glUniformMatrix4fv(glGetUniformLocation(shadptr->progText, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -99,7 +102,7 @@ void Text::createTextureAtlas()
 
 	FT_GlyphSlot g = face->glyph;
 
-	for (int i = 0; i < 128; i++) {
+	for (int i = 32; i < 128; i++) {
 		if (FT_Load_Char(face, i, FT_LOAD_RENDER)) {
 			fprintf(stderr, "Loading character %c failed!\n", i);
 			continue;
@@ -111,6 +114,9 @@ void Text::createTextureAtlas()
 
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
+	
+	glActiveTexture(GL_TEXTURE0);
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, wAtlas, hAtlas, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -118,7 +124,7 @@ void Text::createTextureAtlas()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	int x = 0;
-	for (int i = 0; i < 128; i++) {
+	for (int i = 32; i < 128; i++) {
 		if (FT_Load_Char(face, i, FT_LOAD_RENDER)) {
 			fprintf(stderr, "Loading character %c failed!\n", i);
 			continue;

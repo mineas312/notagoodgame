@@ -19,7 +19,7 @@ public:
 	~Text();
 	void init();
 	// -Set width to 0 if you want to dynamically calculate width based on the given height
-	void render(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+	void render(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, const glm::vec3& color);
 private:
 	void createTextureAtlas();
 private:
