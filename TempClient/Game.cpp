@@ -96,7 +96,7 @@ void Game::render() noexcept
 
 	glUseProgram(shadptr->progText);
 
-	tptr->render("This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+	tptr->render("This is sample, text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.0f, 0.0f));
 
 	SDL_GL_SwapWindow(winptr->window);
 }
