@@ -151,7 +151,7 @@ void Game::renderMap(Map & m)
 	//glBindBuffer(GL_UNIFORM_BUFFER, gptr->ubo);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, gptr->ubo);
 
-	for (auto& kv : uniqueMap)
+	for (const auto& kv : uniqueMap)
 	{
 		glBindVertexArray(kv.first);
 
@@ -179,7 +179,7 @@ void Game::renderMap(Map & m)
 		}
 	}
 
-	for (auto& kv : uniqueMap2) {
+	for (const auto& kv : uniqueMap2) {
 		glBindVertexArray(mptr->mapObjTextures[kv.first].vao);
 
 		glBindTexture(GL_TEXTURE_2D, mptr->mapObjTextures[kv.first].texture);

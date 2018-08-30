@@ -12,7 +12,7 @@ public:
 
 private:
 	void Log(GLuint ID);
-	void initShader(const char* vs, const char* fs, GLuint &program);
+	void initShader(const char* __restrict vs, const char* __restrict fs, GLuint &program);
 
 public:
 	GLuint progGraphics;

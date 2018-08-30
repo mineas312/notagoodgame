@@ -2,7 +2,7 @@
 #include "Shader.h"
 #include "ThreadPool.h"
 
-void Shader::initShader(const char* vs, const char* fs, GLuint &program)
+void Shader::initShader(const char* __restrict vs, const char* __restrict fs, GLuint &program)
 {
 	std::string tmp;
 
@@ -17,9 +17,9 @@ void Shader::initShader(const char* vs, const char* fs, GLuint &program)
 		vsSS << tmp << "\n";
 	}
 
-	std::string vsCode = vsSS.str();
+	const std::string vsCode = vsSS.str();
 	vsCodeCstr = new GLchar[vsCode.size() + 1];
-	std::memcpy(vsCodeCstr, vsCode.data(), vsCode.size());
+	std::copy(vsCode.cbegin(), vsCode.cend(), vsCodeCstr);
 	vsCodeCstr[vsCode.size()] = '\0';
 
 	vsFile.close();
@@ -31,9 +31,9 @@ void Shader::initShader(const char* vs, const char* fs, GLuint &program)
 		fsSS << tmp << "\n";
 	}
 
-	std::string fsCode = fsSS.str();
+	const std::string fsCode = fsSS.str();
 	fsCodeCstr = new GLchar[fsCode.size() + 1];
-	std::memcpy(fsCodeCstr, fsCode.data(), fsCode.size());
+	std::copy(fsCode.cbegin(), fsCode.cend(), fsCodeCstr);
 	fsCodeCstr[fsCode.size()] = '\0';
 
 	fsFile.close();
@@ -59,6 +59,9 @@ void Shader::initShader(const char* vs, const char* fs, GLuint &program)
 	glAttachShader(program, VSID);
 	glAttachShader(program, FSID);
 	glLinkProgram(program);
+
+	glDeleteShader(VSID);
+	glDeleteShader(FSID);
 
 	Log(program);
 }

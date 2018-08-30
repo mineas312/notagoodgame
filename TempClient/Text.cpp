@@ -42,13 +42,13 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 	const __m128 fontScale = _mm_set1_ps(scale);
 	
 	int n = 0;
-	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)
+	for (auto c = text.cbegin(); c != text.cend(); c++)
 	{
 		const Charact ch = characters[*c];
 
 		__m128 fData = _mm_loadu_ps((const float*)&ch);
 		fData = _mm_shuffle_ps(fData, fData, _MM_SHUFFLE(1, 0, 1, 2));
-		
+
 		alignas(16) float fDataArr[4];
 		_mm_store_ps(fDataArr, _mm_mul_ps(_mm_sub_ps(fData, _mm_set_ps(0.0f, 0.0f, ch.bt, 0.0f)), fontScale));
 
@@ -66,21 +66,20 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 
 		alignas(16) float resArr[4];
 		_mm_store_ps(resArr, results);
-		
+
 		resArr[2] = 1.0f - (1.0f - resArr[2]);
 
-		GLfloat vertices[6][4]{
-			{xpos, resArr[0], ch.tx, 0.0f},
-			{xpos, ypos, ch.tx,	resArr[2]},
-			{resArr[1], ypos, resArr[3], resArr[2]},
+		std::array<GLfloat, 6 * 4> vertices = {
+			xpos, resArr[0], ch.tx, 0.0f,
+			xpos, ypos, ch.tx,	resArr[2],
+			resArr[1], ypos, resArr[3], resArr[2],
 
-			{xpos, resArr[0], ch.tx, 0.0f},
-			{resArr[1], ypos, resArr[3], resArr[2]},
-			{resArr[1], resArr[0], resArr[3], 0.0f}
-		};
+			xpos, resArr[0], ch.tx, 0.0f ,
+			resArr[1], ypos, resArr[3], resArr[2],
+			resArr[1], resArr[0], resArr[3], 0.0f
+	};
 
-
-		std::memcpy(verts[n], vertices, 6 * 4 * sizeof(float));
+		std::copy(vertices.cbegin(), vertices.cend(), *verts[n]);
 
 		x += ((GLuint)ch.ax >> 6) * scale;
 		y += ((GLuint)ch.ay >> 6) * scale;
@@ -113,7 +112,7 @@ void Text::renderPlainText(const GLfloat scale)
 	int n = 0;
 	for (PlainText & p : toRender)
 	{
-		for (std::string::const_iterator c = p.text.begin(); c != p.text.end(); c++)
+		for (auto c = p.text.cbegin(); c != p.text.cend(); c++)
 		{
 			const Charact ch = characters[*c];
 
@@ -140,18 +139,17 @@ void Text::renderPlainText(const GLfloat scale)
 
 			resArr[2] = 1.0f - (1.0f - resArr[2]);
 
-			GLfloat vertices[6][4]{
-				{ xpos, resArr[0], ch.tx, 0.0f },
-			{ xpos, ypos, ch.tx,	resArr[2] },
-			{ resArr[1], ypos, resArr[3], resArr[2] },
+			std::array<GLfloat, 6 * 4> vertices = {
+			xpos, resArr[0], ch.tx, 0.0f,
+			xpos, ypos, ch.tx,	resArr[2],
+			resArr[1], ypos, resArr[3], resArr[2],
 
-			{ xpos, resArr[0], ch.tx, 0.0f },
-			{ resArr[1], ypos, resArr[3], resArr[2] },
-			{ resArr[1], resArr[0], resArr[3], 0.0f }
+			xpos, resArr[0], ch.tx, 0.0f,
+			resArr[1], ypos, resArr[3], resArr[2],
+			resArr[1], resArr[0], resArr[3], 0.0f
 			};
 
-
-			std::memcpy(verts[n], vertices, 6 * 4 * sizeof(float));
+			std::copy(vertices.cbegin(), vertices.cend(), *verts[n]);
 
 			p.x += ((GLuint)ch.ax >> 6) * scale;
 			p.y += ((GLuint)ch.ay >> 6) * scale;

@@ -11,7 +11,7 @@ void Character::setCharacter(char * name, const int xPos, const int yPos)
 
 void Character::move(Map & map, const double fps)
 {
-	if (isEqf(fps, 0.0, 3))	// floating point equality comparisons require use of the hardware epsilon
+	if (isEqf(fps, 0.0, 5))	// floating point equality comparisons require use of the hardware epsilon
 		return;
 
 	// Dnia 14.07.2018 g³ówny programista nie wiedzia³ jak uniezale¿niæ prêdkoœæ ruchu od FPSów

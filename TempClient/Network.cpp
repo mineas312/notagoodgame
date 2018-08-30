@@ -187,12 +187,12 @@ void Network::joinServer()
 	send("", 0, CONNECT);
 }
 
-void Network::Uint8ToInt(Uint8 * src, int & dest)
+void Network::Uint8ToInt(Uint8 * src, int & dest) noexcept
 {
 	dest = (src[0] << 24) | (src[1] << 16) | (src[2] << 8) | (src[3]);
 }
 
-void Network::intToUint8(int src, Uint8 * dst)
+void Network::intToUint8(int src, Uint8 * dst) noexcept
 {
 	Uint8 tmp[4];
 	for (int i = 0; i < 4; i++)
