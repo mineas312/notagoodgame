@@ -94,9 +94,14 @@ void Game::render() noexcept
 
 	mptr->charTexture.render(charptr->entity.box.x, charptr->entity.box.y);
 
-	glUseProgram(shadptr->progText);
+	// Fps
+	std::string fps = "FPS: ";
+	fps += std::to_string(currentFPS);
+	tptr->addTextToRender(fps, 0.0f, winptr->SCREEN_HEIGHT - TEXT_HEIGHT);
 
-	tptr->render("This is sample, text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.0f, 0.0f));
+	// Text render
+	glUseProgram(shadptr->progText);
+	tptr->renderPlainText(1.0f);
 
 	SDL_GL_SwapWindow(winptr->window);
 }

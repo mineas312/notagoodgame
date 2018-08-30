@@ -23,7 +23,7 @@ void Text::init()
 		printf("[ERROR] Failed to load font!");
 		exit(-4);
 	}
-	FT_Set_Pixel_Sizes(face, 0, 48);
+	FT_Set_Pixel_Sizes(face, 0, TEXT_HEIGHT);
 
 	createTextureAtlas();
 }
@@ -45,12 +45,6 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)
 	{
 		const Charact ch = characters[*c];
-		
-		/*GLfloat xpos = x + ch.bl * scale;
-		GLfloat ypos = y - (ch.sizey - ch.bt) * scale;
-
-		GLfloat w = ch.sizex * scale;
-		GLfloat h = ch.sizey * scale;*/
 
 		__m128 fData = _mm_loadu_ps((const float*)&ch);
 		fData = _mm_shuffle_ps(fData, fData, _MM_SHUFFLE(1, 0, 1, 2));
@@ -63,23 +57,11 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 		const GLfloat w = fDataArr[2];
 		const GLfloat h = fDataArr[3];
 
-		/*alignas(16) GLfloat vertices[6][4]{
-			{ xpos,     ypos + h,   ch.tx, 0.0 },
-			{ xpos,     ypos,       ch.tx, 1.0 - (1.0 - ch.sizey / hAtlas) },
-			{ xpos + w, ypos,       ch.tx + ch.sizex / wAtlas, 1.0 - (1.0 - ch.sizey / hAtlas) },
-
-			{ xpos,     ypos + h,   ch.tx, 0.0 },
-			{ xpos + w, ypos,       ch.tx + ch.sizex / wAtlas, 1.0 - (1.0 - ch.sizey / hAtlas) },
-			{ xpos + w, ypos + h,   ch.tx + ch.sizex / wAtlas, 0.0 }
-		};*/
-
 		const __m128 additions = _mm_set_ps(ch.tx, 0.0f, w, h);
 		__m128 results = _mm_set_ps(ch.sizex, ch.sizey, xpos, ypos);
 
-		// ch.sizex / wAtlas, ch.sizey / hAtlas, xpos, ypos
 		results = _mm_div_ps(results, divisors);
 
-		// ch.tx + ch.sizex / wAtlas, ch.sizey / hAtlas, xpos + w, ypos + h
 		results = _mm_add_ps(results, additions);
 
 		alignas(16) float resArr[4];
@@ -100,14 +82,6 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 
 		std::memcpy(verts[n], vertices, 6 * 4 * sizeof(float));
 
-		//for (int i = 0; i < 6; i++)
-		//{
-		//	/*for (int l = 0; l < 4; l++)
-		//		verts[n][i][l] = vertices[i][l];*/
-
-		//	_mm_store_ps(verts[n][i], _mm_load_ps(vertices[i]));
-		//}
-
 		x += ((GLuint)ch.ax >> 6) * scale;
 		y += ((GLuint)ch.ay >> 6) * scale;
 		n++;
@@ -118,6 +92,88 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 	glDrawArrays(GL_TRIANGLES, 0, n * 6);
 
 	delete[] verts;
+}
+
+void Text::renderPlainText(const GLfloat scale)
+{
+	glBindVertexArray(vao);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glUniform3f(3, 255, 255, 255);
+
+	int size = 0;
+	for (PlainText & p : toRender)
+		size += p.text.size();
+
+	alignas(16) GLfloat(*verts)[6][4] = new GLfloat[size][6][4];
+
+	const __m128 divisors = _mm_set_ps(wAtlas, hAtlas, 1.0f, 1.0f);
+	const __m128 fontScale = _mm_set1_ps(scale);
+
+	int n = 0;
+	for (PlainText & p : toRender)
+	{
+		for (std::string::const_iterator c = p.text.begin(); c != p.text.end(); c++)
+		{
+			const Charact ch = characters[*c];
+
+			__m128 fData = _mm_loadu_ps((const float*)&ch);
+			fData = _mm_shuffle_ps(fData, fData, _MM_SHUFFLE(1, 0, 1, 2));
+
+			alignas(16) float fDataArr[4];
+			_mm_store_ps(fDataArr, _mm_mul_ps(_mm_sub_ps(fData, _mm_set_ps(0.0f, 0.0f, ch.bt, 0.0f)), fontScale));
+
+			const GLfloat xpos = p.x + fDataArr[0];
+			const GLfloat ypos = p.y - fDataArr[1];
+			const GLfloat w = fDataArr[2];
+			const GLfloat h = fDataArr[3];
+
+			const __m128 additions = _mm_set_ps(ch.tx, 0.0f, w, h);
+			__m128 results = _mm_set_ps(ch.sizex, ch.sizey, xpos, ypos);
+
+			results = _mm_div_ps(results, divisors);
+
+			results = _mm_add_ps(results, additions);
+
+			alignas(16) float resArr[4];
+			_mm_store_ps(resArr, results);
+
+			resArr[2] = 1.0f - (1.0f - resArr[2]);
+
+			GLfloat vertices[6][4]{
+				{ xpos, resArr[0], ch.tx, 0.0f },
+			{ xpos, ypos, ch.tx,	resArr[2] },
+			{ resArr[1], ypos, resArr[3], resArr[2] },
+
+			{ xpos, resArr[0], ch.tx, 0.0f },
+			{ resArr[1], ypos, resArr[3], resArr[2] },
+			{ resArr[1], resArr[0], resArr[3], 0.0f }
+			};
+
+
+			std::memcpy(verts[n], vertices, 6 * 4 * sizeof(float));
+
+			p.x += ((GLuint)ch.ax >> 6) * scale;
+			p.y += ((GLuint)ch.ay >> 6) * scale;
+			n++;
+		}
+	}
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4 * n, verts, GL_DYNAMIC_DRAW);
+
+	glDrawArrays(GL_TRIANGLES, 0, n * 6);
+
+	delete[] verts;
+	toRender.clear();
+}
+
+void Text::addTextToRender(const std::string & text, GLfloat x, GLfloat y)
+{
+	PlainText p;
+	p.text = text;
+	p.x = x;
+	p.y = y;
+	toRender.push_back(p);
 }
 
 void Text::createTextureAtlas()
