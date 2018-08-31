@@ -36,21 +36,21 @@ void Server::update()
 	{
 		if (netptr->clients[i].used)
 		{
-			for (int ii = 0; ii < SERVER_SLOTS; ii++)
+			for (int j = 0; j < SERVER_SLOTS; j++)
 			{
-				if (netptr->clients[ii].used)
+				if (netptr->clients[j].used)
 				{
-					if (ii != i)
+					if (j != i)
 					{
-						if (netptr->clients[ii].entity.lastX == netptr->clients[ii].entity.x && netptr->clients[ii].entity.lastY == netptr->clients[ii].entity.y)
+						if (netptr->clients[j].entity.lastX == netptr->clients[j].entity.x && netptr->clients[j].entity.lastY == netptr->clients[j].entity.y)
 							continue;
 						Uint8 data[12];
-						netptr->intToUint8(netptr->clients[ii].entity.x, &data[0]);
-						netptr->intToUint8(netptr->clients[ii].entity.y, &data[4]);
-						netptr->intToUint8(ii, &data[8]);
+						netptr->intToUint8(netptr->clients[j].entity.x, &data[0]);
+						netptr->intToUint8(netptr->clients[j].entity.y, &data[4]);
+						netptr->intToUint8(j, &data[8]);
 						netptr->send(netptr->clients[i], 12, (char*)data, ENTITY_POSITION);
-						netptr->clients[ii].entity.lastX = netptr->clients[ii].entity.x;
-						netptr->clients[ii].entity.lastY = netptr->clients[ii].entity.y;
+						netptr->clients[j].entity.lastX = netptr->clients[j].entity.x;
+						netptr->clients[j].entity.lastY = netptr->clients[j].entity.y;
 					}
 				}
 			}

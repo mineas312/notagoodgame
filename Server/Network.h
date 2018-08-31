@@ -34,9 +34,9 @@ public:
 
 	void disconnectClient(int id);
 
-	void Uint8ToInt(Uint8 * src, int & dest);
+	void Uint8ToInt(Uint8* __restrict src, int & dest) noexcept;
 
-	void intToUint8(int src, Uint8 * dst);
+	void intToUint8(int src, Uint8* __restrict dst) noexcept;
 
 private:
 	void reallocPacket(UDPpacket * packet, int size);

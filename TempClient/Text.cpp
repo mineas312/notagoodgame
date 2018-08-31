@@ -77,7 +77,7 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 			xpos, resArr[0], ch.tx, 0.0f ,
 			resArr[1], ypos, resArr[3], resArr[2],
 			resArr[1], resArr[0], resArr[3], 0.0f
-	};
+		};
 
 		std::copy(vertices.cbegin(), vertices.cend(), *verts[n]);
 
@@ -85,7 +85,7 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 		y += ((GLuint)ch.ay >> 6) * scale;
 		n++;
 	}
-
+	
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4 * n, verts, GL_DYNAMIC_DRAW);
 
 	glDrawArrays(GL_TRIANGLES, 0, n * 6);

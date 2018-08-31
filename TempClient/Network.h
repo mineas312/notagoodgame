@@ -39,9 +39,9 @@ private:
 
 	void reallocPacket(UDPpacket * packet, int size);
 
-	void Uint8ToInt(Uint8 * src, int & dest) noexcept;
+	void Uint8ToInt(Uint8* __restrict src, int & dest) noexcept;
 
-	void intToUint8(int src, Uint8 * dst) noexcept;
+	void intToUint8(int src, Uint8* __restrict dst) noexcept;
 
 	void disconnectEntity(int id);
 

@@ -4,21 +4,12 @@
 class Object
 {
 public:
-	Object() : canMoveThrough{ false }, id{ -1 }
-	{}
+	Object() = default;
 
-	void set(int width, int height, int x, int y, bool _canMoveThrough, int _id)
-	{
-		box.w = width;
-		box.h = height;
-		box.x = x;
-		box.y = y;
-		canMoveThrough = _canMoveThrough;
-		id = _id;
-	}
+	void set(int width, int height, int x, int y, bool _canMoveThrough, int _id);
 
 public:
 	SDL_Rect box;
-	bool canMoveThrough;
-	int id;
+	bool canMoveThrough = false;
+	int id = -1;
 };
