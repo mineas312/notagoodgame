@@ -98,6 +98,7 @@ void Text::renderPlainText(const GLfloat scale)
 	glBindVertexArray(vao);
 	glBindTexture(GL_TEXTURE_2D, tex);
 
+	// Hardcoded location 3 in text.frag shader
 	glUniform3f(3, 255, 255, 255);
 
 	int size = 0;

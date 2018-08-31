@@ -47,11 +47,7 @@ void Window::init()
 	}
 
 	// Multisampling
-#ifdef MSAA
 	glEnable(GL_MULTISAMPLE);
-#else
-	glDisable(GL_MULTISAMPLE);
-#endif
 
 	// Alpha blending
 	glEnable(GL_BLEND);
@@ -107,10 +103,8 @@ void Window::setOpenGLAtrributes() noexcept
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-#ifdef MSAA
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-#endif
 #ifndef _DEBUG
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_NO_ERROR, 1);
 #endif
