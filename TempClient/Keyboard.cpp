@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Keyboard.h"
+#include "Character.h"
 
 void processKeyEvents(bool & moving) noexcept
 {

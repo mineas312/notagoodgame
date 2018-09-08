@@ -10,7 +10,7 @@ public:
 	void set(int width, int height, int x, int y, bool _canMoveThrough, int _id);
 
 public:
-	SDL_Rect box;
+	SDL_Rect box{};
 	bool canMoveThrough;
-	int id;
+	int id{};
 };

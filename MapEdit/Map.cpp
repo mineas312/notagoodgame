@@ -1,4 +1,7 @@
 #include "Map.h"
+#include "GUI.h"
+#include <sstream>
+#include <fstream>
 
 Texture g_TileSetTiles;
 Texture * g_ObjectTextures;
@@ -15,10 +18,10 @@ Tile::Tile(int x, int y, int _type, TileInfo& _tileInfo)
 
 	//Get the tile type
 	type = _type;
-	tileInfo = _tileInfo;
+	tile_info = _tileInfo;
 }
 
-void Tile::setTile(int x, int y, int _type, TileInfo& _tileInfo)
+void Tile::set_tile(int x, int y, int _type, TileInfo& _tileInfo)
 {
 	//Get the offsets
 	box.x = x;
@@ -30,10 +33,10 @@ void Tile::setTile(int x, int y, int _type, TileInfo& _tileInfo)
 
 	//Get the tile type
 	type = _type;
-	tileInfo = _tileInfo;
+	tile_info = _tileInfo;
 }
 
-void Tile::render(SDL_Rect* clip)
+void Tile::render(SDL_Rect* clip) const
 {
 	if (clip == NULL)
 		g_TileSetTiles.render(box.x - wptr->camera.x, box.y - wptr->camera.y);
@@ -90,7 +93,7 @@ void Map::loadTiles(std::string path)
 	std::stringstream ctile;
 	ctile << path << "/tileset.png";
 
-	g_TileSetTiles.loadTexture(ctile.str().c_str());
+	g_TileSetTiles.load_texture(ctile.str().c_str());
 
 	createTiles(path.c_str());
 }
@@ -127,12 +130,11 @@ void Map::createTiles(const char* path)
 				fprintf(stderr, "Error loading map: Unexpected end of file!\n");
 				createNewMap(path);
 				exit(-4);
-				break;
 			}
 
 			if (tileType >= 0 && tileType <= totalTileSetTiles)
 			{
-				tileSet[i].setTile(x, y, tileType, tileInfo[tileType]);
+				tileSet[i].set_tile(x, y, tileType, tileInfo[tileType]);
 			}
 			else
 			{
@@ -140,7 +142,6 @@ void Map::createTiles(const char* path)
 				fprintf(stderr, "Error loading map: Invalid tile type at %d!\n", i);
 				createNewMap(path);
 				exit(-4);
-				break;
 			}
 
 			x += TILE_WIDTH;
@@ -155,7 +156,7 @@ void Map::createTiles(const char* path)
 	map.close();
 }
 
-void Map::loadTilesPlace() noexcept
+void Map::loadTilesPlace() const noexcept
 {
 	for (int i = 0; i < totalTileSetTiles; i++)
 	{
@@ -215,7 +216,7 @@ void Map::loadObjects(const char* path)
 	{
 		std::stringstream sobj;
 		sobj << path << "/obj/obj" << i << ".png";
-		g_ObjectTextures[i].loadTexture(sobj.str().c_str());
+		g_ObjectTextures[i].load_texture(sobj.str().c_str());
 	}
 
 	txt >> objCount;
@@ -239,7 +240,7 @@ void Map::loadObjects(const char* path)
 	txt.close();
 }
 
-void Map::createNewMap(const char* path)
+void Map::createNewMap(const char* path) const
 {
 	std::stringstream ss;
 	ss << path << "/mapFile.map";

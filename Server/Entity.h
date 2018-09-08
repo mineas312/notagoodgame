@@ -1,10 +1,9 @@
 #pragma once
-#include <SDL.h>
 
 class Entity
 {
 public:
-	Entity() noexcept : x{ 0 }, y{ 0 }, name{ NULL }, lastX{ 0 }, lastY{ 0 }
+	Entity() noexcept : x{ 0 }, y{ 0 }, lastX{ 0 }, lastY{ 0 }, name { nullptr }
 	{}
 
 	void del() noexcept;

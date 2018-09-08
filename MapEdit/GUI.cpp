@@ -1,6 +1,6 @@
 #include "GUI.h"
 
-void GUI::renderGUI(Map& m, int currentID, int mode, int currentObjID)
+void GUI::renderGUI(Map& m, int currentID, int mode, int currentObjID) const
 {
 	SDL_SetRenderDrawColor(g_renderer, 100, 100, 100, 255);
 	SDL_RenderFillRect(g_renderer, &backgroudGUI);
@@ -17,17 +17,17 @@ void GUI::renderGUI(Map& m, int currentID, int mode, int currentObjID)
 				tmpRect.x += wptr->camera.w;
 				while (tmpRect.y >= wptr->SCREEN_HEIGHT)
 				{
-					for (int i = 0; i < m.totalTileSetTiles; i++)
+					for (int j = 0; j < m.totalTileSetTiles; j++)
 					{
-						tilesPosition[i].y -= TILE_HEIGHT;
+						tilesPosition[j].y -= TILE_HEIGHT;
 					}
 				}
 
 				while (tmpRect.y < 0)
 				{
-					for (int i = 0; i < m.totalTileSetTiles; i++)
+					for (int j = 0; j < m.totalTileSetTiles; j++)
 					{
-						tilesPosition[i].y += TILE_HEIGHT;
+						tilesPosition[j].y += TILE_HEIGHT;
 					}
 				}
 
@@ -62,7 +62,7 @@ void GUI::init(Map& m)
 		tilesPosition[i].w = TILE_WIDTH;
 		tilesPosition[i].h = TILE_HEIGHT;
 
-		int x = 0, y = 0;
+		int x, y = 0;
 		x = i * TILE_WIDTH;
 		while (x >= 160)
 		{
@@ -94,7 +94,7 @@ void GUI::init(Map& m)
 	}
 }
 
-void GUI::selectRect(SDL_Rect* rect)
+void GUI::selectRect(SDL_Rect* rect) const
 {
 	int x, y;
 	SDL_GetMouseState(&x, &y);

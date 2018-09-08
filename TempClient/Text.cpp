@@ -2,7 +2,7 @@
 #include "Text.h"
 
 
-Text::Text()
+Text::Text(): ft(nullptr), face(nullptr), projection(), vao(0), vbo(0), tex(0), characters{}
 {
 }
 
@@ -36,13 +36,13 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 	// Hardcoded location 3 in text.frag shader
 	glUniform3f(3, color.x, color.y, color.z);
 
-	alignas(16) GLfloat(*verts)[6][4] = new GLfloat[text.size()][6][4];
+	alignas(16) GLfloat (*verts)[6][4] = new GLfloat[text.size()][6][4];
 
 	const __m128 divisors = _mm_set_ps(wAtlas, hAtlas, 1.0f, 1.0f);
 	const __m128 fontScale = _mm_set1_ps(scale);
-	
+
 	int n = 0;
-	for (auto c = text.cbegin(); c != text.cend(); c++)
+	for (auto c = text.cbegin(); c != text.cend(); ++c)
 	{
 		const Charact ch = characters[*c];
 
@@ -71,10 +71,10 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 
 		std::array<GLfloat, 6 * 4> vertices = {
 			xpos, resArr[0], ch.tx, 0.0f,
-			xpos, ypos, ch.tx,	resArr[2],
+			xpos, ypos, ch.tx, resArr[2],
 			resArr[1], ypos, resArr[3], resArr[2],
 
-			xpos, resArr[0], ch.tx, 0.0f ,
+			xpos, resArr[0], ch.tx, 0.0f,
 			resArr[1], ypos, resArr[3], resArr[2],
 			resArr[1], resArr[0], resArr[3], 0.0f
 		};
@@ -85,7 +85,7 @@ void Text::render(const std::string& text, GLfloat x, GLfloat y, const GLfloat s
 		y += ((GLuint)ch.ay >> 6) * scale;
 		n++;
 	}
-	
+
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4 * n, verts, GL_DYNAMIC_DRAW);
 
 	glDrawArrays(GL_TRIANGLES, 0, n * 6);
@@ -102,18 +102,18 @@ void Text::renderPlainText(const GLfloat scale)
 	glUniform3f(3, 255, 255, 255);
 
 	int size = 0;
-	for (PlainText & p : toRender)
+	for (PlainText& p : toRender)
 		size += p.text.size();
 
-	alignas(16) GLfloat(*verts)[6][4] = new GLfloat[size][6][4];
+	alignas(16) GLfloat (*verts)[6][4] = new GLfloat[size][6][4];
 
 	const __m128 divisors = _mm_set_ps(wAtlas, hAtlas, 1.0f, 1.0f);
 	const __m128 fontScale = _mm_set1_ps(scale);
 
 	int n = 0;
-	for (PlainText & p : toRender)
+	for (PlainText& p : toRender)
 	{
-		for (auto c = p.text.cbegin(); c != p.text.cend(); c++)
+		for (auto c = p.text.cbegin(); c != p.text.cend(); ++c)
 		{
 			const Charact ch = characters[*c];
 
@@ -141,13 +141,13 @@ void Text::renderPlainText(const GLfloat scale)
 			resArr[2] = 1.0f - (1.0f - resArr[2]);
 
 			std::array<GLfloat, 6 * 4> vertices = {
-			xpos, resArr[0], ch.tx, 0.0f,
-			xpos, ypos, ch.tx,	resArr[2],
-			resArr[1], ypos, resArr[3], resArr[2],
+				xpos, resArr[0], ch.tx, 0.0f,
+				xpos, ypos, ch.tx, resArr[2],
+				resArr[1], ypos, resArr[3], resArr[2],
 
-			xpos, resArr[0], ch.tx, 0.0f,
-			resArr[1], ypos, resArr[3], resArr[2],
-			resArr[1], resArr[0], resArr[3], 0.0f
+				xpos, resArr[0], ch.tx, 0.0f,
+				resArr[1], ypos, resArr[3], resArr[2],
+				resArr[1], resArr[0], resArr[3], 0.0f
 			};
 
 			std::copy(vertices.cbegin(), vertices.cend(), *verts[n]);
@@ -166,7 +166,7 @@ void Text::renderPlainText(const GLfloat scale)
 	toRender.clear();
 }
 
-void Text::addTextToRender(const std::string & text, GLfloat x, GLfloat y)
+void Text::addTextToRender(const std::string& text, GLfloat x, GLfloat y)
 {
 	PlainText p;
 	p.text = text;
@@ -185,17 +185,19 @@ void Text::createTextureAtlas()
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-	
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), nullptr);
+
 	projection = glm::ortho(0.0f, (float)winptr->SCREEN_WIDTH, 0.0f, (float)winptr->SCREEN_HEIGHT);
-	glUniformMatrix4fv(glGetUniformLocation(shadptr->progText, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(glGetUniformLocation(shadptr->progText, "projection"), 1, GL_FALSE, value_ptr(projection));
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	FT_GlyphSlot g = face->glyph;
 
-	for (int i = 32; i < 128; i++) {
-		if (FT_Load_Char(face, i, FT_LOAD_RENDER)) {
+	for (int i = 32; i < 128; i++)
+	{
+		if (FT_Load_Char(face, i, FT_LOAD_RENDER))
+		{
 			fprintf(stderr, "Loading character %c failed!\n", i);
 			continue;
 		}
@@ -206,22 +208,25 @@ void Text::createTextureAtlas()
 
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	
+
 	glActiveTexture(GL_TEXTURE0);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, wAtlas, hAtlas, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, wAtlas, hAtlas, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	int x = 0;
-	for (int i = 32; i < 128; i++) {
-		if (FT_Load_Char(face, i, FT_LOAD_RENDER)) {
+	for (int i = 32; i < 128; i++)
+	{
+		if (FT_Load_Char(face, i, FT_LOAD_RENDER))
+		{
 			fprintf(stderr, "Loading character %c failed!\n", i);
 			continue;
 		}
-		glTexSubImage2D(GL_TEXTURE_2D, 0, x, 0, g->bitmap.width, g->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, x, 0, g->bitmap.width, g->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE,
+		                g->bitmap.buffer);
 
 		characters[i].sizex = g->bitmap.width;
 		characters[i].sizey = g->bitmap.rows;
@@ -235,4 +240,4 @@ void Text::createTextureAtlas()
 	}
 }
 
-Text * tptr;
+Text* tptr;

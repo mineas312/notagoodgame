@@ -3,6 +3,12 @@
 #include "Game.h"
 #include "Camera.h"
 #include "Common.h"
+#include "Entity.h"
+#include "Event.h"
+#include "Network.h"
+#include "Character.h"
+#include "Media.h"
+#include "Text.h"
 
 Game::Game() noexcept
 {
@@ -41,11 +47,11 @@ void Game::loop()
 {
 	// Fps counter
 	Uint64 startClock = SDL_GetPerformanceCounter();
-	Uint64 lastClock = 0;
+	Uint64 lastClock;
 
 	// Interpolation timer
 	Uint64 timer = SDL_GetPerformanceCounter();
-	Uint64 now = 0;
+	Uint64 now;
 
 	while (!quit)
 	{
@@ -71,7 +77,7 @@ void Game::loop()
 	}
 }
 
-void Game::close() noexcept
+void Game::close() const noexcept
 {
 	netptr->disconnect();
 	winptr->close();
@@ -122,7 +128,7 @@ void Game::update()
 
 Game* gptr;
 
-void Game::renderMap(Map & m)
+void Game::renderMap(Map & m) const
 {
 	// Tiles rendering
 	glBindTexture(GL_TEXTURE_2D, mptr->mapTilesTexture->texture);

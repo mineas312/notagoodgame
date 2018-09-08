@@ -1,7 +1,5 @@
 #pragma once
-#include "Event.h"
-#include "Network.h"
-#include "Text.h"
+#include "Entity.h"
 
 class Game
 {
@@ -13,19 +11,19 @@ public:
 
 	void loop();
 
-	void close() noexcept;
+	void close() const noexcept;
 
 private:
 	void render() noexcept;
 
 	void update();
 
-	void renderMap(Map &m);
+	void renderMap(Map &m) const;
 
 	void second();
 
 public:
-	GLuint ubo;
+	GLuint ubo{};
 
 private:
 

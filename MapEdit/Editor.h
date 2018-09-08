@@ -1,6 +1,5 @@
 #pragma once
 #include "Map.h"
-#include "GUI.h"
 
 enum Mode
 {
@@ -13,36 +12,36 @@ class Editor
 public:
 	Editor(int screen_width, int screen_height);
 
-	void init(std::string map, int mapWidth, int mapHeight);
+	void init(std::string map, int map_width, int map_height);
 
 	void loop();
 
 	void render();
 
 private:
-	void putTile();
+	void put_tile() const;
 
-	void putObject();
+	void put_object();
 
-	void saveMap();
+	void save_map();
 
-	void removeObject();
+	void remove_object();
 
-	void processEvents();
+	void process_events();
 
-	void replaceTiles();
+	void replace_tiles();
 
 private:
-	Map m;
-	bool quit = false;
-	Uint32 currentFPS;
-	int currentType = 0;
-	int currentTypeObject = 0;
-	bool editorMoveThrough = false;
-	std::string mapFile;
-	Mode mode = TILES_EDITOR;
-	bool rightClick = false;
-	SDL_Rect select;
+	Map m_;
+	bool quit_ = false;
+	Uint32 current_fps_;
+	int current_type_ = 0;
+	int current_type_object_ = 0;
+	bool editor_move_through_ = false;
+	std::string map_file_;
+	Mode mode_ = TILES_EDITOR;
+	bool right_click_ = false;
+	SDL_Rect select_{};
 };
 
 extern Editor* eptr;

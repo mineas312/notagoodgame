@@ -72,7 +72,7 @@ void Shader::init()
 	shadptr->initShader("res/shaders/text.vert", "res/shaders/text.frag", progText);
 }
 
-void Shader::Log(GLuint ID)
+void Shader::Log(GLuint ID) const
 {
 	GLsizei bufSize = 0;
 	GLsizei logLength = 0;

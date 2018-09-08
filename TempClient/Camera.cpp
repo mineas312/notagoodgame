@@ -2,7 +2,8 @@
 #include "Camera.h"
 
 
-Camera::Camera() : proj { glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f) }
+Camera::Camera() : cameraPos(), cameraTarget(), cameraDirection(), view(), proj {glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f)},
+                   camRect()
 {
 }
 

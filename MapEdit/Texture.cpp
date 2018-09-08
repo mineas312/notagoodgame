@@ -1,20 +1,22 @@
 #include "Texture.h"
+#include <cstdio>
+#include <SDL_image.h>
 
 TTF_Font * font;
 SDL_Renderer * g_renderer;
 
 bool check_collision(const SDL_Rect& a, const SDL_Rect& b)
 {
-	return (a.y + a.h) <= b.y || (b.y + b.h) <= a.y || (a.x + a.w) <= b.x || (b.x + b.w) <= a.x ? false : true;
+	return !(a.y + a.h <= b.y || (b.y + b.h) <= a.y || (a.x + a.w) <= b.x || (b.x + b.w) <= a.x);
 }
 
-bool Texture::loadTexture(const char * path)
+bool Texture::load_texture(const char * path)
 {
 	bool success = true;
 	free();
 
 	SDL_Surface* loadedSurface = IMG_Load(path);
-	if (loadedSurface == NULL)
+	if (loadedSurface == nullptr)
 	{
 		fprintf(stderr, "Cannot load image %s. SDL_image Error: %s\n", path, IMG_GetError());
 		printf("Cannot load image %s. SDL_image Error: %s\n", path, IMG_GetError());
@@ -84,7 +86,7 @@ void Texture::free()
 	}
 }
 
-void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
+void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) const
 {
 	SDL_Rect quad = { x, y, width, height };
 	if (clip != NULL)

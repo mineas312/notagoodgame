@@ -4,7 +4,7 @@
 class Entity
 {
 public:
-	Entity() noexcept : box{ 0, 0, 0, 0 }, name { NULL }, id{ -1 }, interTicks{ 0 }, interRemainX{ 0.0f }, interRemainY{ 0.0f }, sumX{ 0.0f }, sumY{ 0.0f }, interX{ 0 }, interY{ 0 }
+	Entity() noexcept : box{ 0, 0, 0, 0 }, id{ -1 }, name{ nullptr }, interTicks{ 0 }, interRemainX{ 0.0f }, interRemainY{ 0.0f }, sumX{ 0.0f }, interX{ 0 }, sumY{ 0.0f }, interY{ 0 }
 	{}
 
 	void del() noexcept;

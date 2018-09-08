@@ -2,6 +2,7 @@
 
 #include "Map.h"
 #include "Common.h"
+#include "Media.h"
 
 // -Call path to the folder
 //   +The files are needed to run map:
@@ -21,17 +22,17 @@ void Map::setMap(const int _width, const int _height, const char * path)
 	loadObjects(path);
 }
 
-SDL_Rect * Map::getTilesPlace() noexcept
+SDL_Rect * Map::getTilesPlace() const noexcept
 {
 	return tilesPlace;
 }
 
-bool Map::collides(SDL_Rect & box)
+bool Map::collides(SDL_Rect & box) const
 {
 	// TODO: Optimize loop
 	for (int i = 0; i < totalTiles; i++)
 	{
-		if (!tileSet[i].tileInfo.canMoveThrough)
+		if (!tileSet[i].tile_info.canMoveThrough)
 		{
 			if (checkCollision(box, tileSet[i].box))
 				return true;
@@ -98,14 +99,14 @@ void Map::loadTiles(const char * path)
 	Texture * tiles = new Texture[static_cast<uint64_t>(totalTileSetTiles)];
 
 	// Dimension check
-	tiles[0].setTexture(ctile.str().c_str());
-	tilesFileWidth = tiles[0].texWidth;
+	tiles[0].set_texture(ctile.str().c_str());
+	tilesFileWidth = tiles[0].tex_width;
 
 	createTiles(path);
 
 	for (int ii = 0; ii < totalTileSetTiles; ii++)
 	{
-		tiles[ii].setTexture(ctile.str().c_str(), &tilesPlace[ii]);
+		tiles[ii].set_texture(ctile.str().c_str(), &tilesPlace[ii]);
 	}
 
 	mptr->mapTilesTexture = tiles;
@@ -145,7 +146,7 @@ void Map::createTiles(const char * path)
 
 			if (tileType >= 0 && tileType <= totalTileSetTiles)
 			{
-				tileSet[i].setTile(x, y, tileType, tileInfo[tileType]);
+				tileSet[i].set_tile(x, y, tileType, tileInfo[tileType]);
 			}
 			else
 			{
@@ -165,7 +166,7 @@ void Map::createTiles(const char * path)
 	map.close();
 }
 
-void Map::loadTilesPlace() noexcept
+void Map::loadTilesPlace() const noexcept
 {
 	for (int i = 0; i < totalTileSetTiles; i++)
 	{
@@ -243,7 +244,7 @@ void Map::loadObjects(const char * path)
 	{
 		std::stringstream sobj;
 		sobj << path << "/obj/obj" << i << ".png";
-		mptr->mapObjTextures[i].setTexture(sobj.str().c_str());
+		mptr->mapObjTextures[i].set_texture(sobj.str().c_str());
 	}
 
 	txt >> objCount;

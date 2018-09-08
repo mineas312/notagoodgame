@@ -2,8 +2,9 @@
 #include "Texture.h"
 #include "Map.h"
 
-Window::Window(const int width, const int height) : SCREEN_WIDTH {width}, SCREEN_HEIGHT {height}
-{}
+Window::Window(const int width, const int height) : e(), camera(), SCREEN_WIDTH {width}, SCREEN_HEIGHT {height}
+{
+}
 
 bool Window::init()
 {
@@ -14,19 +15,20 @@ bool Window::init()
 	}
 
 	window = SDL_CreateWindow("Level Designer. Current Tile ID: 0", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	if (window == NULL)
+	if (window == nullptr)
 	{
 		return false;
 	}
 
 	g_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (g_renderer == NULL)
+	if (g_renderer == nullptr)
 	{
 		printf("Cannot create renderer");
 		return false;
 	}
 
 	SDL_SetRenderDrawBlendMode(g_renderer, SDL_BLENDMODE_BLEND);
+	camera = { 0, 0, SCREEN_WIDTH - 256, SCREEN_HEIGHT };
 
 	return true;
 }

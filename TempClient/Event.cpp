@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Event.h"
+#include "Keyboard.h"
 
 void Event::checkEvents(bool & quit, bool & moving)
 {
@@ -43,6 +44,8 @@ void Event::checkEvents(bool & quit, bool & moving)
 				processKeyEvents(moving);
 				break;
 			}
+			default: 
+				break;
 			}
 		}
 
@@ -76,6 +79,8 @@ void Event::checkEvents(bool & quit, bool & moving)
 				processKeyEvents(moving);
 				break;
 			}
+			default: 
+				break;
 			}
 		}
 	}

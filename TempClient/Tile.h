@@ -3,7 +3,6 @@
 #define TILE_HEIGHT 32
 
 #include "Texture.h"
-#include "Media.h"
 
 struct TileInfo
 {
@@ -16,15 +15,10 @@ class Tile
 public:
 	Tile() noexcept;
 
-	void setTile(const int x, const int y, const int _type, TileInfo& info);
-
-	void render();
-
-	void setName(TileInfo& _tileInfo);
-
+	void set_tile(int x, int y, int _type, TileInfo& info);
 
 public:
 	int type;
-	TileInfo tileInfo;
+	TileInfo tile_info;
 	SDL_Rect box;
 };

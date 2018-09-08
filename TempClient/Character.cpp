@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "Character.h"
 #include "Common.h"
+#include "Media.h"
 
 void Character::setCharacter(char * name, const int xPos, const int yPos)
 {
 	entity.setEntity(name, xPos, yPos);
-	entity.box.w = mptr->charTexture.texWidth;
-	entity.box.h = mptr->charTexture.texHeight;
+	entity.box.w = mptr->charTexture.tex_width;
+	entity.box.h = mptr->charTexture.tex_height;
 }
 
 void Character::move(Map & map, const double fps)

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Network.h"
+#include "Entity.h"
 
 void Network::init(const char * ip, Uint16 port, std::vector<Entity> * ent)
 {
@@ -143,7 +144,7 @@ void Network::processPacket()
 	}
 }
 
-void Network::reallocPacket(UDPpacket * packet, int size)
+void Network::reallocPacket(UDPpacket * packet, int size) const
 {
 	int newSize;
 	newSize = SDLNet_ResizePacket(packet, size);
@@ -156,7 +157,7 @@ void Network::reallocPacket(UDPpacket * packet, int size)
 	}
 }
 
-void Network::close()
+void Network::close() const
 {
 	SDLNet_UDP_Close(socket);
 	SDLNet_Quit();
@@ -176,10 +177,10 @@ void Network::networkUpdate(int charX, int charY)
 		Uint8 tmp[8];
 		intToUint8(charX, &tmp[0]);
 		intToUint8(charY, &tmp[4]);
-		send((char*)tmp, 8, ENTITY_POSITION);
+		send(reinterpret_cast<char*>(tmp), 8, ENTITY_POSITION);
 		start += TICKRATE;
 	}
-	delta = SDL_GetTicks();
+	//delta = SDL_GetTicks();
 }
 
 void Network::joinServer()
@@ -187,12 +188,12 @@ void Network::joinServer()
 	send("", 0, CONNECT);
 }
 
-void Network::Uint8ToInt(Uint8* __restrict src, int & dest) noexcept
+void Network::Uint8ToInt(Uint8* __restrict src, int & dest) const noexcept
 {
 	dest = (src[0] << 24) | (src[1] << 16) | (src[2] << 8) | (src[3]);
 }
 
-void Network::intToUint8(int src, Uint8* __restrict dst) noexcept
+void Network::intToUint8(int src, Uint8* __restrict dst) const noexcept
 {
 	Uint8 tmp[4];
 	for (int i = 0; i < 4; i++)

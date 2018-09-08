@@ -1,5 +1,4 @@
 #pragma once
-#include "Character.h"
 
 enum KeyBoard
 {

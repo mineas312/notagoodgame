@@ -3,12 +3,8 @@
 #define TILE_HEIGHT 32
 
 #include <SDL.h>
-#include <SDL_image.h>
-#include <sstream>
-#include <fstream>
 #include <vector>
 
-#include "Window.h"
 #include "Object.h"
 #include "Texture.h"
 
@@ -28,14 +24,14 @@ public:
 
 	Tile(int x, int y, int _type, TileInfo& _tileInfo);
 
-	void setTile(int x, int y, int _type, TileInfo& _tileInfo);
+	void set_tile(int x, int y, int _type, TileInfo& _tileInfo);
 
-	void render(SDL_Rect* clip = NULL);
+	void render(SDL_Rect* clip = NULL) const;
 
 public:
-	SDL_Rect box;
-	int type;
-	TileInfo tileInfo;
+	SDL_Rect box{};
+	int type{};
+	TileInfo tile_info;
 };
 
 class Map
@@ -50,13 +46,13 @@ private:
 
 	void createTiles(const char* path);
 
-	void loadTilesPlace() noexcept;
+	void loadTilesPlace() const noexcept;
 
 	void free();
 
 	void loadObjects(const char* path);
 
-	void createNewMap(const char* path);
+	void createNewMap(const char* path) const;
 
 public:
 	int width = 0;

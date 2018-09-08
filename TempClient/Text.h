@@ -16,8 +16,8 @@ struct Charact
 
 struct PlainText
 {
-	GLfloat x;
-	GLfloat y;
+	GLfloat x{};
+	GLfloat y{};
 	std::string text;
 };
 

@@ -15,7 +15,7 @@ public:
 	void close() noexcept;
 
 private:
-	void setOpenGLAtrributes() noexcept;
+	void setOpenGLAtrributes() const noexcept;
 
 public:
 	int SCREEN_WIDTH;

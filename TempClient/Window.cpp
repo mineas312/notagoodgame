@@ -97,7 +97,7 @@ void Window::close() noexcept
 	context = NULL;
 }
 
-void Window::setOpenGLAtrributes() noexcept
+void Window::setOpenGLAtrributes() const noexcept
 {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);

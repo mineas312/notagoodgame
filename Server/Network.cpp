@@ -1,4 +1,6 @@
 #include "Network.h"
+#include <cstdio>
+#include <cstring>
 
 void Network::init(Uint16 port)
 {
@@ -36,7 +38,7 @@ void Network::init(Uint16 port)
 	clients = new Client[SERVER_SLOTS];
 }
 
-void Network::send(Client client, int len, const char * data, PacketType type)
+void Network::send(Client client, int len, const char * data, PacketType type) const
 {
 	sendPacket->address = client.addr;
 	sendPacket->len = 4 + len;
@@ -119,7 +121,7 @@ void Network::disconnectClient(int id)
 		nextSlot = id;
 }
 
-void Network::reallocPacket(UDPpacket * packet, int size)
+void Network::reallocPacket(UDPpacket * packet, int size) const
 {
 	int newSize;
 	newSize = SDLNet_ResizePacket(packet, size);
@@ -178,12 +180,12 @@ void Network::processPacket()
 	}
 }
 
-void Network::Uint8ToInt(Uint8* __restrict src, int & dest) noexcept
+void Network::Uint8ToInt(Uint8* __restrict src, int & dest) const noexcept
 {
 	dest = (src[0] << 24) | (src[1] << 16) | (src[2] << 8) | (src[3]);
 }
 
-void Network::intToUint8(int src, Uint8* __restrict dst) noexcept
+void Network::intToUint8(int src, Uint8* __restrict dst) const noexcept
 {
 	Uint8 * tmp = new Uint8[4];
 	for (int i = 0; i < 4; i++)
@@ -191,7 +193,7 @@ void Network::intToUint8(int src, Uint8* __restrict dst) noexcept
 	std::memcpy(dst, tmp, 4);
 }
 
-void Network::close()
+void Network::close() const
 {
 	SDLNet_UDP_Close(socket);
 	SDLNet_Quit();

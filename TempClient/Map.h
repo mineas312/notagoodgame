@@ -1,15 +1,14 @@
 #pragma once
 #include "Tile.h"
 #include "Object.h"
-#include "Entity.h"
 
 #define TICKRATE 32
-#define MS_PER_TICK 1000/TICKRATE
+#define MS_PER_TICK (1000/TICKRATE)
 
 class Map
 {
 public:
-	Map() noexcept : tilesFileWidth{ 0 }, totalTileSetTiles { 0 }, width{ 0 }, height{ 0 }, totalTiles{ 0 }, tileSet{ NULL }, tilesPlace{ NULL }, tileInfo{ NULL }
+	Map() noexcept : tilesFileWidth{ 0 }, totalTileSetTiles { 0 }, width{ 0 }, height{ 0 }, totalTiles{ 0 }, tileSet{ NULL }, tileInfo{ NULL }, tilesPlace{ NULL }
 	{}
 
 	// -Call it without extension
@@ -19,16 +18,16 @@ public:
 	//     .png containing tiles
 	void setMap(const int _width, const int _height, const char * path);
 
-	SDL_Rect* getTilesPlace() noexcept;
+	SDL_Rect* getTilesPlace() const noexcept;
 
-	bool collides(SDL_Rect& box);
+	bool collides(SDL_Rect& box) const;
 
 private:
 	void loadTiles(const char * path);
 
 	void createTiles(const char * path);
 
-	void loadTilesPlace() noexcept;
+	void loadTilesPlace() const noexcept;
 
 	void free();
 
@@ -47,6 +46,6 @@ public:
 	Tile* tileSet;
 	SDL_Rect* tilesPlace;
 
-	int objCount;
-	Object * objects;
+	int objCount{};
+	Object * objects{};
 };

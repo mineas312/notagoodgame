@@ -3,7 +3,7 @@
 void Entity::del() noexcept
 {
 	delete[] name;
-	name = NULL;
+	name = nullptr;
 }
 
 void Entity::setEntity(char * _name, const int xPos, const int yPos) noexcept

@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL_net.h>
 #include "Map.h"
+#include "Entity.h"
 
 enum PacketType
 {
@@ -16,12 +17,13 @@ enum PacketType
 class Network
 {
 public:
-	Network() : sendPacket{ NULL }, recvPacket{ NULL }, id { -1 }
-	{}
+	Network() : sendPacket{NULL}, recvPacket{NULL}, entities(nullptr), id {-1}, socket(nullptr), addr()
+	{
+	}
 
 	void init(const char * ip, Uint16 port, std::vector<Entity> * ent);
 
-	void close();
+	void close() const;
 
 	void networkUpdate(int charX, int charY);
 
@@ -37,11 +39,11 @@ private:
 
 	void processPacket();
 
-	void reallocPacket(UDPpacket * packet, int size);
+	void reallocPacket(UDPpacket * packet, int size) const;
 
-	void Uint8ToInt(Uint8* __restrict src, int & dest) noexcept;
+	void Uint8ToInt(Uint8* __restrict src, int & dest) const noexcept;
 
-	void intToUint8(int src, Uint8* __restrict dst) noexcept;
+	void intToUint8(int src, Uint8* __restrict dst) const noexcept;
 
 	void disconnectEntity(int id);
 

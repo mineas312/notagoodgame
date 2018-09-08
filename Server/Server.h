@@ -3,12 +3,12 @@
 #include "Network.h"
 
 #define TICKRATE 32
-#define MS_PER_TICK 1000/TICKRATE
+#define MS_PER_TICK (1000/TICKRATE)
 
 class Server
 {
 public:
-	Server() : quit{ false }
+	Server() : quit{false}, secCounter(0)
 	{
 		netptr = new Network;
 	}
