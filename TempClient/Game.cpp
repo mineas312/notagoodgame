@@ -31,7 +31,7 @@ void Game::init()
 	mptr->loadMedia();
 	camptr->init();
 	map.setMap(5120, 3840, "res/map1");
-	netptr->init("25.73.149.25", 42069, &entities);
+	netptr->init("localhost", 42069, &entities);
 	netptr->joinServer();
 	tptr->init();
 
